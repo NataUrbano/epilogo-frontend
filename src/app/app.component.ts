@@ -1,14 +1,16 @@
-<<<<<<< HEAD
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserResponseDTO } from './core/models/userResponseDTO.model';
 import { UsersService } from './core/services/users.service';
-import { Subscription } from 'rxjs';
-
+import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './shared/navbar/navbar.component';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  imports: [RouterOutlet, NavbarComponent],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit {
   
   userResponseDTO: UserResponseDTO[] = [];
@@ -28,17 +30,3 @@ export class AppComponent implements OnInit {
       });
   }
 }
-=======
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-
-@Component({
-  selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
-})
-export class AppComponent {
-  title = 'epilogo-frontend';
-}
->>>>>>> 934248c1a2d213e1ae0d41ce0bf3800c5e4691b4

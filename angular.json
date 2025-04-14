@@ -5,15 +5,7 @@
   "projects": {
     "epilogo-frontend": {
       "projectType": "application",
-<<<<<<< HEAD
       "schematics": {},
-=======
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
->>>>>>> 934248c1a2d213e1ae0d41ce0bf3800c5e4691b4
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -28,10 +20,6 @@
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-<<<<<<< HEAD
-=======
-            "inlineStyleLanguage": "scss",
->>>>>>> 934248c1a2d213e1ae0d41ce0bf3800c5e4691b4
             "assets": [
               {
                 "glob": "**/*",
@@ -39,11 +27,7 @@
               }
             ],
             "styles": [
-<<<<<<< HEAD
               "src/styles.css"
-=======
-              "src/styles.scss"
->>>>>>> 934248c1a2d213e1ae0d41ce0bf3800c5e4691b4
             ],
             "scripts": []
           },
@@ -73,12 +57,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-<<<<<<< HEAD
           "options": {
             "proxyConfig": "src/proxy.conf.json"
           },
-=======
->>>>>>> 934248c1a2d213e1ae0d41ce0bf3800c5e4691b4
           "configurations": {
             "production": {
               "buildTarget": "epilogo-frontend:build:production"
@@ -100,10 +81,6 @@
               "zone.js/testing"
             ],
             "tsConfig": "tsconfig.spec.json",
-<<<<<<< HEAD
-=======
-            "inlineStyleLanguage": "scss",
->>>>>>> 934248c1a2d213e1ae0d41ce0bf3800c5e4691b4
             "assets": [
               {
                 "glob": "**/*",
@@ -111,11 +88,7 @@
               }
             ],
             "styles": [
-<<<<<<< HEAD
               "src/styles.css"
-=======
-              "src/styles.scss"
->>>>>>> 934248c1a2d213e1ae0d41ce0bf3800c5e4691b4
             ],
             "scripts": []
           }
