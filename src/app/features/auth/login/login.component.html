@@ -1,0 +1,110 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow border-0 rounded-lg">
+        <div class="card-body p-4 p-lg-5">
+          <div class="text-center mb-4">
+            <h1 class="h3 fw-bold">Iniciar sesión</h1>
+            <p class="text-muted small">
+              O
+              <a [routerLink]="['/auth/register']" class="text-primary text-decoration-none">
+                crea una cuenta nueva
+              </a>
+            </p>
+          </div>
+          
+          <!-- Alert message -->
+          <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>
+              <strong>Error:</strong> {{ errorMessage }}
+            </div>
+          </div>
+          
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="needs-validation">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-envelope"></i>
+                </span>
+                <input
+                  id="email"
+                  type="email"
+                  formControlName="email"
+                  class="form-control"
+                  [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)}"
+                  placeholder="tu@email.com"
+                />
+                <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="invalid-feedback">
+                  Email inválido
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <div class="d-flex justify-content-between">
+                <label for="password" class="form-label">Contraseña</label>
+                <a href="#" class="text-primary text-decoration-none small">¿Olvidaste tu contraseña?</a>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-lock"></i>
+                </span>
+                <input
+                  id="password"
+                  type="password"
+                  formControlName="password"
+                  class="form-control"
+                  [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)}"
+                  placeholder="Tu contraseña"
+                />
+                <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="invalid-feedback">
+                  Contraseña es requerida
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-4 form-check">
+              <input 
+                type="checkbox" 
+                class="form-check-input" 
+                id="remember-me"
+              >
+              <label class="form-check-label" for="remember-me">Recordarme</label>
+            </div>
+            
+            <div class="d-grid">
+              <button
+                type="submit"
+                [disabled]="loginForm.invalid || isLoading"
+                class="btn btn-primary btn-lg"
+              >
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isLoading ? 'Procesando...' : 'Iniciar sesión' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Social login options (opcional) -->
+      <div class="card mt-3 border-0 shadow-sm">
+        <div class="card-body py-3 text-center">
+          <p class="mb-2 text-muted small">O inicia sesión con</p>
+          <div class="d-flex justify-content-center gap-2">
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-google"></i>
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-facebook"></i>
+            </button>
+            <button class="btn btn-outline-secondary">
+              <i class="bi bi-twitter-x"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

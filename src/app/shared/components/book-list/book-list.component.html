@@ -1,0 +1,126 @@
+<!-- book-list.component.html -->
+<div class="books-container" id="libros-seccion">
+  <div class="books-header">
+    <h2 class="section-title">{{ 'BOOKS.TITLESECTION' | translate }}</h2>
+    
+    <div class="search-filters">
+      <!-- Filtros activos -->
+      <div class="active-filters">
+        @if (selectedCategory) {
+          <div class="filter-tag category-filter">
+            Categoría: {{ selectedCategory.categoryName }}
+            <button class="clear-filter" (click)="clearCategoryFilter()">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        }
+        
+        @if (searchParams.query) {
+          <div class="filter-tag search-filter">
+            Búsqueda: "{{ searchParams.query }}"
+            <button class="clear-filter" (click)="clearSearchFilter()">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        }
+      </div>
+      
+      <div class="sort-options">
+        <select (change)="onSortChange($event)">
+          <option value="title" [selected]="searchParams.sortBy === 'title'">Título</option>
+          <option value="registerDate" [selected]="searchParams.sortBy === 'registerDate'">Más recientes</option>
+        </select>
+        <button class="sort-direction" (click)="onSortChange($event)">
+          <i class="fa" [class.fa-sort-up]="searchParams.sortDirection === 'asc'" 
+                       [class.fa-sort-down]="searchParams.sortDirection === 'desc'"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  @if (loading) {
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Cargando libros...</p>
+    </div>
+  }
+  
+  @if (error) {
+    <div class="error-message">
+      <p>No se pudieron cargar los libros</p>
+      <button (click)="retryLoad()" class="retry-button">Intentar nuevamente</button>
+    </div>
+  }
+  
+  @if (!loading && !error && books.length === 0) {
+    <div class="no-results">
+      <p>No se encontraron libros que coincidan con tu búsqueda</p>
+    </div>
+  }
+  
+  @if (!loading && !error && books.length > 0) {
+    <div class="books-grid">
+      @for (book of books; track book.bookId) {
+        <div class="book-card">
+          <!-- Ahora usamos selectBook para emitir el evento -->
+          <div class="book-cover" (click)="selectBook(book.bookId)"
+               [style.background-image]="book.imageUrl ? 'url(' + book.imageUrl + ')' : 'url(/assets/images/default-book.png)'">
+            <div class="book-status" 
+                 [class.available]="book.bookStatus === BookStatus.AVAILABLE"
+                 [class.low-stock]="book.bookStatus === BookStatus.LOW_STOCK"
+                 [class.unavailable]="book.bookStatus === BookStatus.UNAVAILABLE">
+              @switch (book.bookStatus) {
+                @case (BookStatus.AVAILABLE) { Disponible }
+                @case (BookStatus.LOW_STOCK) { Pocas unidades }
+                @case (BookStatus.UNAVAILABLE) { No disponible }
+              }
+            </div>
+          </div>
+          <div class="book-info">
+            <h3 class="book-title" (click)="selectBook(book.bookId)">{{ book.title }}</h3>
+            <p class="book-author">{{ book.authorName }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+  
+  @if (totalPages > 1) {
+    <div class="pagination">
+      <button 
+        class="pagination-button" 
+        [disabled]="currentPage === 0"
+        (click)="onPageChange(currentPage - 1)">
+        <i class="fa fa-chevron-left"></i>
+      </button>
+      
+      <div class="page-numbers">
+        @for (page of getPagesArray(); track page) {
+          <button 
+            class="page-number"
+            [class.active]="currentPage === page"
+            (click)="onPageChange(page)">
+            {{ page + 1 }}
+          </button>
+        }
+        
+        @if (totalPages > 5 && currentPage < totalPages - 3) {
+          <span>...</span>
+          
+          <button 
+            class="page-number"
+            (click)="onPageChange(totalPages - 1)">
+            {{ totalPages }}
+          </button>
+        }
+      </div>
+      
+      <button 
+        class="pagination-button"
+        [disabled]="currentPage === totalPages - 1"
+        (click)="onPageChange(currentPage + 1)">
+        <i class="fa fa-chevron-right"></i>
+      </button>
+    </div>
+  }
+</div>

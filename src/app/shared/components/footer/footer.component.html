@@ -1,0 +1,125 @@
+<footer class="footer mt-auto py-4">
+  <div class="container">
+    <!-- Sección principal del footer -->
+    <div class="row g-4">
+      <!-- Logo y descripción -->
+      <div class="col-lg-4 col-md-6">
+        <div class="mb-3">
+          <a class="d-inline-block text-decoration-none" href="#">
+            <h5 class="footer-logo mb-0">{{ 'APP.NAME' | translate }}</h5>
+          </a>
+        </div>
+        <p class="footer-text small mb-3">
+          {{ 'FOOTER.DESCRIPTION' | translate }}
+        </p>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn-social" [attr.aria-label]="'FOOTER.SOCIAL.FACEBOOK' | translate">
+            <i class="bi bi-facebook"></i>
+          </a>
+          <a href="#" class="btn-social" [attr.aria-label]="'FOOTER.SOCIAL.TWITTER' | translate">
+            <i class="bi bi-twitter-x"></i>
+          </a>
+          <a href="#" class="btn-social" [attr.aria-label]="'FOOTER.SOCIAL.INSTAGRAM' | translate">
+            <i class="bi bi-instagram"></i>
+          </a>
+          <a href="#" class="btn-social" [attr.aria-label]="'FOOTER.SOCIAL.LINKEDIN' | translate">
+            <i class="bi bi-linkedin"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Enlaces rápidos -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6 class="footer-heading mb-3">{{ 'FOOTER.QUICK_LINKS' | translate }}</h6>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a routerLink="/" class="footer-link">{{ 'NAVIGATION.HOME' | translate }}</a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/books" class="footer-link">{{ 'NAVIGATION.BOOKS' | translate }}</a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/categories" class="footer-link">{{ 'NAVIGATION.CATEGORIES' | translate }}</a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/services" class="footer-link">{{ 'NAVIGATION.SERVICES' | translate }}</a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/contact" class="footer-link">{{ 'NAVIGATION.CONTACT' | translate }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Información legal -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <h6 class="footer-heading mb-3">{{ 'FOOTER.LEGAL' | translate }}</h6>
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <a routerLink="/terms" class="footer-link">{{ 'FOOTER.TERMS' | translate }}</a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/privacy" class="footer-link">{{ 'FOOTER.PRIVACY' | translate }}</a>
+          </li>
+          <li class="mb-2">
+            <a routerLink="/cookies" class="footer-link">{{ 'FOOTER.COOKIES' | translate }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Información de contacto y suscripción -->
+      <div class="col-lg-4 col-md-6">
+        <h6 class="footer-heading mb-3">{{ 'FOOTER.STAY_CONNECTED' | translate }}</h6>
+        <p class="footer-text small mb-3">{{ 'FOOTER.NEWSLETTER_MESSAGE' | translate }}</p>
+        <form class="mb-3" (ngSubmit)="onSubmit()">
+          <div class="input-group">
+            <input type="email" 
+                   class="form-control" 
+                   [placeholder]="'FOOTER.EMAIL_PLACEHOLDER' | translate" 
+                   [attr.aria-label]="'FOOTER.EMAIL_ARIA_LABEL' | translate" 
+                   [(ngModel)]="email" 
+                   name="email" 
+                   required>
+            <button class="btn-subscribe" type="submit">{{ 'FOOTER.SUBSCRIBE' | translate }}</button>
+          </div>
+          
+          <!-- Mensaje de éxito/error -->
+          <div *ngIf="subscriptionMessage" 
+               [class]="'mt-2 small alert ' + (subscriptionSuccess ? 'alert-success' : 'alert-danger') + ' py-1 px-2'">
+            {{ subscriptionMessage }}
+          </div>
+        </form>
+        <div class="footer-text small">
+          <div class="mb-1">
+            <i class="bi bi-geo-alt me-2"></i> 
+            {{ 'FOOTER.CONTACT.ADDRESS' | translate }}
+          </div>
+          <div class="mb-1">
+            <i class="bi bi-envelope me-2"></i> 
+            {{ 'FOOTER.CONTACT.EMAIL' | translate }}
+          </div>
+          <div>
+            <i class="bi bi-telephone me-2"></i> 
+            {{ 'FOOTER.CONTACT.PHONE' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Borde divisor -->
+    <hr class="my-4 footer-divider">
+
+    <!-- Copyright y enlaces de políticas -->
+    <div class="row align-items-center">
+      <div class="col-md-6 text-center text-md-start">
+        <p class="footer-copyright small mb-md-0">
+          &copy; {{ currentYear }} {{ 'APP.NAME' | translate }}. {{ 'FOOTER.COPYRIGHT' | translate }}
+        </p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <p class="footer-copyright small mb-0">
+          {{ 'FOOTER.DEVELOPED_WITH' | translate }} <i class="bi bi-heart-fill text-danger"></i> {{ 'FOOTER.IN_ANGULAR' | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

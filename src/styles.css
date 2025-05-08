@@ -1,1 +1,227 @@
-/* You can add global styles to this file, and also import other style files */
+/* Variables de color personalizadas */
+:root {
+  --primary: #d9b0aa;
+  --primary-dark: #ba8680;
+  --primary-light: #f3dbd7;
+  --secondary: #fcf8ef;
+  --secondary-dark: #e3e0d8;
+  --text-dark: #343a40;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* Estilos del header sticky */
+.sticky-top {
+  z-index: 1030;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Primer nivel del header - ACTUALIZADO para usar el mismo color del segundo nivel */
+.header-main {
+  background-color: var(--secondary);
+  border-bottom: 1px solid var(--secondary-dark);
+  transition: all 0.3s ease;
+}
+
+/* Segundo nivel del header (navegación) */
+.header-nav {
+  background-color: var(--secondary);
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  max-height: 50px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+/* Estado colapsado del nav */
+.header-nav.nav-collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* Botón para expandir/colapsar el nav */
+.nav-expander-btn {
+  position: relative;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Avatar del usuario */
+.user-avatar {
+  border: 2px solid var(--primary-light);
+  transition: all 0.3s ease;
+}
+
+.user-avatar:hover {
+  border-color: var(--primary);
+}
+
+/* Dropdown menu */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu-container {
+  position: relative;
+}
+
+.dropdown-menu {
+  border-color: var(--secondary-dark);
+  background-color: var(--secondary);
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 1000;
+  display: none;
+  min-width: 10rem;
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  text-align: left;
+  list-style: none;
+  border-radius: 0.25rem;
+  background-clip: padding-box;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  clear: both;
+  font-weight: 400;
+  color: var(--text-dark);
+  text-align: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+}
+
+.dropdown-item:hover {
+  background-color: var(--primary-light);
+}
+
+/* Menú móvil */
+.mobile-menu {
+  background-color: var(--secondary);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.mobile-menu-open {
+  max-height: 100vh; /* Valor alto para acomodar cualquier contenido */
+}
+
+.mobile-menu-closed {
+  max-height: 0;
+}
+
+/* Estilos para los elementos de navegación */
+.nav-link {
+  color: var(--text-dark);
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary-dark);
+}
+
+.nav-link.active {
+  color: var(--primary-dark) !important;
+  font-weight: 600;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary);
+  transform: scaleX(0.8);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.nav-link.active:hover::after {
+  transform: scaleX(1);
+}
+
+/* Botones primarios */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--text-dark);
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: var(--text-dark);
+}
+
+/* Botones outline */
+.btn-outline-primary {
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+  background-color: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--text-dark);
+}
+
+/* Textos */
+.text-primary {
+  color: var(--primary-dark) !important;
+}
+
+/* Fondo para elementos activos */
+.bg-primary.bg-opacity-10 {
+  background-color: var(--primary-light) !important;
+}
+
+/* NUEVO: Personalización de la barra de desplazamiento */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-dark);
+}
+
+/* Para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--secondary);
+}

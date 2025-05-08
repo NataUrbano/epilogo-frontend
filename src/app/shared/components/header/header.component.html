@@ -1,0 +1,277 @@
+<!-- Header principal -->
+<header class="header-container">
+  <!-- Barra principal: Logo, búsqueda y opciones de usuario -->
+  <div class="header-main py-2 px-3">
+    <div class="container-fluid p-0">
+      <div class="row align-items-center">
+        <!-- Logo -->
+        <div class="col-auto d-flex align-items-center">
+          <a routerLink="/" class="logo-link">
+            <img src="assets/favicon-32x32.png" alt="Logo" width="32" height="32" class="me-2" />
+            <h1 class="h4 fw-bold text-primary mb-0">{{ 'APP.NAME' | translate }}</h1>
+          </a>
+        </div>
+
+        <!-- Bloque derecho: Login/Usuario y Menú móvil -->
+        <div class="col-auto ms-auto d-flex align-items-center order-md-3">
+          <!-- Selector de idioma -->
+          <div class="dropdown language-dropdown">
+            <button 
+              class="btn btn-outline-light border-0 dropdown-toggle d-flex align-items-center text-primary"
+              type="button"
+              id="languageDropdown"
+              (click)="toggleLanguageMenu($event)">
+              <i class="bi bi-globe2 me-1"></i>
+              <span class="d-none d-sm-inline-block">{{ getCurrentLanguageDisplay() }}</span>
+            </button>
+            
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" [class.show]="isLanguageMenuOpen">
+              <li>
+                <a class="dropdown-item" href="#" (click)="changeLanguage('es', $event)" [class.active]="currentLanguage === 'es'">
+                  <span class="fi fi-es me-2"></span> {{ 'LANGUAGES.SPANISH' | translate }}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#" (click)="changeLanguage('en', $event)" [class.active]="currentLanguage === 'en'">
+                  <span class="fi fi-us me-2"></span> {{ 'LANGUAGES.ENGLISH' | translate }}
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#" (click)="changeLanguage('fr', $event)" [class.active]="currentLanguage === 'fr'">
+                  <span class="fi fi-fr me-2"></span> {{ 'LANGUAGES.FRENCH' | translate }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Opciones de usuario -->
+          <div class="user-options ms-2">
+            @if (isAuthenticated) {
+              <div class="dropdown d-inline-block">
+                <button 
+                  class="btn btn-outline-light border-0 dropdown-toggle d-flex align-items-center user-menu-btn" 
+                  type="button" 
+                  id="userDropdown" 
+                  (click)="toggleMenu($event)">
+                  <span class="d-none d-sm-inline-block me-2 text-primary">{{ currentUser?.userName }}</span>
+                  <div class="rounded-circle user-avatar overflow-hidden">
+                    @if (currentUser?.imageUrl) {
+                      <img [src]="currentUser?.imageUrl" alt="{{ 'HEADER.USER_PROFILE' | translate }}" class="w-100 h-100 object-fit-cover" />
+                    } @else {
+                      <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary">
+                        <span class="small fw-semibold">{{ getUserInitials() }}</span>
+                      </div>
+                    }
+                  </div>
+                </button>
+                
+                <div class="dropdown-menu-container">
+                  <ul class="dropdown-menu dropdown-menu-end shadow-sm" [class.show]="isMenuOpen">
+                    <li>
+                      <a class="dropdown-item" routerLink="/auth/profile" (click)="closeMenu()">
+                        {{ 'HEADER.MY_PROFILE' | translate }}
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item" href="#" (click)="logout($event)">
+                        {{ 'HEADER.LOGOUT' | translate }}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            } @else {
+              <div class="auth-buttons">
+                <a routerLink="/auth/login" class="btn btn-link text-decoration-none d-none d-sm-inline-block">
+                  {{ 'HEADER.LOGIN' | translate }}
+                </a>
+                <a routerLink="/auth/register" class="btn btn-primary d-none d-sm-inline-block">
+                  {{ 'HEADER.REGISTER' | translate }}
+                </a>
+                <a routerLink="/auth/login" class="btn btn-outline-primary d-sm-none">
+                  <i class="bi bi-person"></i>
+                </a>
+              </div>
+            }
+          </div>
+
+          <!-- Botón menú móvil -->
+          <button 
+            class="btn btn-outline-secondary border-0 ms-2 mobile-menu-toggle" 
+            type="button"
+            (click)="toggleMobileMenu(); $event.stopPropagation()">
+            <i class="bi bi-list"></i>
+          </button>
+          
+          <!-- Botón para expandir/colapsar segundo nivel (visible solo durante scroll) -->
+          @if (showNavExpander) {
+            <button 
+              class="btn btn-outline-primary border-0 d-none d-lg-inline-block nav-expander-btn ms-2"
+              (click)="toggleNavCollapse()">
+              <i class="bi" [ngClass]="{'bi-chevron-down': isNavCollapsed, 'bi-chevron-up': !isNavCollapsed}"></i>
+              <span class="ms-1 small">{{ 'HEADER.MENU' | translate }}</span>
+            </button>
+          }
+        </div>
+
+        <!-- Barra de búsqueda -->
+        <div class="col-12 col-md mt-2 mt-md-0 order-md-2 px-0 px-md-3">
+          <app-search-bar
+            [allowEmptySearch]="true"
+            (search)="onSearch($event)">
+          </app-search-bar>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Segundo nivel: Menú de navegación (con animación de colapso) -->
+  <div class="header-nav" [ngClass]="{'nav-collapsed': isNavCollapsed}">
+    <div class="container-fluid p-0">
+      <!-- Navegación escritorio -->
+      <nav class="main-nav d-none d-md-block">
+        <ul class="nav justify-content-start">
+          <li class="nav-item">
+            <a class="nav-link" 
+              routerLink="/" 
+              routerLinkActive="active" 
+              [routerLinkActiveOptions]="{exact: true}">{{ 'NAVIGATION.HOME' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" 
+              (click)="goToLibros()"
+              routerLinkActive="active">{{ 'NAVIGATION.BOOKS' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" 
+              routerLink="/categories" 
+              routerLinkActive="active">{{ 'NAVIGATION.CATEGORIES' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" 
+              routerLink="/services" 
+              routerLinkActive="active">{{ 'NAVIGATION.SERVICES' | translate }}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" 
+              routerLink="/contact" 
+              routerLinkActive="active">{{ 'NAVIGATION.CONTACT' | translate }}</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Menú móvil (overlay) -->
+  <div class="mobile-menu" [ngClass]="{'mobile-menu-open': isMobileMenuOpen}" (click)="closeMobileMenu()">
+    <div class="mobile-menu-content" (click)="$event.stopPropagation()">
+      <!-- Botón cerrar -->
+      <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-sm btn-outline-secondary border-0" (click)="closeMobileMenu()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      
+      <!-- Navegación móvil -->
+      <nav class="mobile-nav">
+        <ul class="list-unstyled mb-4">
+          <li>
+            <a class="mobile-nav-link" 
+              routerLink="/" 
+              routerLinkActive="active" 
+              [routerLinkActiveOptions]="{exact: true}"
+              (click)="closeMobileMenu()">{{ 'NAVIGATION.HOME' | translate }}</a>
+          </li>
+          <li>
+            <a class="mobile-nav-link" 
+              routerLink="/" 
+              routerLinkActive="active"
+              (click)="closeMobileMenu(); goToLibros()">{{ 'NAVIGATION.BOOKS' | translate }}</a>
+          </li>
+          <li>
+            <a class="mobile-nav-link" 
+              routerLink="/categories" 
+              routerLinkActive="active"
+              (click)="closeMobileMenu()">{{ 'NAVIGATION.CATEGORIES' | translate }}</a>
+          </li>
+          <li>
+            <a class="mobile-nav-link" 
+              routerLink="/services" 
+              routerLinkActive="active"
+              (click)="closeMobileMenu()">{{ 'NAVIGATION.SERVICES' | translate }}</a>
+          </li>
+          <li>
+            <a class="mobile-nav-link" 
+              routerLink="/contact" 
+              routerLinkActive="active"
+              (click)="closeMobileMenu()">{{ 'NAVIGATION.CONTACT' | translate }}</a>
+          </li>
+        </ul>
+
+        <!-- Opciones de autenticación móvil -->
+        @if (isAuthenticated) {
+          <div class="mobile-user-profile">
+            <div class="d-flex align-items-center mb-3">
+              <div class="rounded-circle user-avatar-mobile overflow-hidden me-3">
+                @if (currentUser?.imageUrl) {
+                  <img [src]="currentUser?.imageUrl" alt="{{ 'HEADER.USER_PROFILE' | translate }}" class="w-100 h-100 object-fit-cover" />
+                } @else {
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary">
+                    <span class="fw-semibold">{{ getUserInitials() }}</span>
+                  </div>
+                }
+              </div>
+              <div>
+                <p class="fw-bold mb-0">{{ currentUser?.userName }}</p>
+                <p class="text-muted small mb-0">{{ currentUser?.email }}</p>
+              </div>
+            </div>
+            
+            <a routerLink="/auth/profile" 
+              class="mobile-profile-link"
+              (click)="closeMobileMenu()">{{ 'HEADER.MY_PROFILE' | translate }}</a>
+            
+            <a href="#" 
+              class="mobile-profile-link text-danger"
+              (click)="logout($event)">{{ 'HEADER.LOGOUT' | translate }}</a>
+          </div>
+        } @else {
+          <div class="mobile-auth-buttons">
+            <a routerLink="/auth/login" 
+              class="btn btn-outline-primary btn-block mb-2"
+              (click)="closeMobileMenu()">{{ 'HEADER.LOGIN' | translate }}</a>
+            <a routerLink="/auth/register" 
+              class="btn btn-primary btn-block"
+              (click)="closeMobileMenu()">{{ 'HEADER.REGISTER' | translate }}</a>
+          </div>
+        }
+
+        <!-- Selector de idioma móvil -->
+        <div class="mobile-language-selector mt-4">
+          <h6 class="text-muted mb-2">{{ 'HEADER.LANGUAGE' | translate }}</h6>
+          <div class="list-group">
+            <a href="#" 
+              class="list-group-item list-group-item-action d-flex align-items-center" 
+              [class.active]="currentLanguage === 'es'"
+              (click)="changeLanguage('es', $event); closeMobileMenu()">
+              <span class="fi fi-es me-2"></span> {{ 'LANGUAGES.SPANISH' | translate }}
+            </a>
+            <a href="#" 
+              class="list-group-item list-group-item-action d-flex align-items-center" 
+              [class.active]="currentLanguage === 'en'"
+              (click)="changeLanguage('en', $event); closeMobileMenu()">
+              <span class="fi fi-us me-2"></span> {{ 'LANGUAGES.ENGLISH' | translate }}
+            </a>
+            <a href="#" 
+              class="list-group-item list-group-item-action d-flex align-items-center" 
+              [class.active]="currentLanguage === 'fr'"
+              (click)="changeLanguage('fr', $event); closeMobileMenu()">
+              <span class="fi fi-fr me-2"></span> {{ 'LANGUAGES.FRENCH' | translate }}
+            </a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>

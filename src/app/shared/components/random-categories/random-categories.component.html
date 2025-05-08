@@ -1,0 +1,33 @@
+<!-- random-categories.component.html -->
+<div class="categories-container">
+    <h2 class="section-title">{{'CATEGORIES.TITLESECTION' | translate}}</h2>
+    
+    @if (loading) {
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>Cargando categorías...</p>
+      </div>
+    }
+    
+    @if (error) {
+      <div class="error-message">
+        <p>No se pudieron cargar las categorías</p>
+        <button (click)="retryLoad()" class="retry-button">Intentar nuevamente</button>
+      </div>
+    }
+    
+    @if (!loading && !error) {
+      <div class="categories-grid">
+        @for (category of categories; track category.categoryId) {
+          <div class="category-card" (click)="onSelectCategory(category.categoryId)">
+            <div class="category-image" 
+                 [style.background-image]="category.imageUrl ? 'url(' + category.imageUrl + ')' : 'url(/assets/images/default-category.png)'">
+            </div>
+            <div class="category-name">
+              {{ category.categoryName }}
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>

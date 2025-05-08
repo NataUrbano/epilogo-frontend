@@ -1,0 +1,182 @@
+/* Variables de color personalizadas */
+:root {
+  --primary: #d9b0aa;
+  --primary-dark: #ba8680;
+  --primary-light: #f3dbd7;
+  --secondary: #fcf8ef;
+  --secondary-dark: #e3e0d8;
+  --text-dark: #343a40;
+}
+
+/* Estilos base del footer */
+.footer {
+  background-color: var(--secondary);
+  color: var(--text-dark);
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+/* Títulos y logo */
+.footer-logo {
+  color: var(--text-dark);
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-logo::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 40px;
+  height: 2px;
+  background-color: var(--secondary);
+  transition: width 0.3s ease;
+}
+
+.footer-logo:hover::after {
+  width: 100%;
+}
+
+.footer-heading {
+  color: var(--text-dark);
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.footer-heading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 30px;
+  height: 2px;
+  background-color: var(--secondary);
+}
+
+/* Textos */
+.footer-text {
+  color: var(--text-dark);
+  opacity: 0.8;
+}
+
+.footer-copyright {
+  color: var(--text-dark);
+  opacity: 0.7;
+}
+
+/* Enlaces */
+.footer-link {
+  color: var(--text-dark);
+  opacity: 0.8;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--text-dark);
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover {
+  opacity: 1;
+  color: var(--text-dark);
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
+
+/* Botones sociales */
+.btn-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-dark);
+  color: var(--secondary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-social:hover {
+  background-color: var(--text-dark);
+  color: var(--secondary);
+  transform: translateY(-3px);
+}
+
+/* Botón de suscripción */
+.btn-subscribe {
+  background-color: var(--secondary);
+  color: var(--primary-dark);
+  border: none;
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0 0.25rem 0.25rem 0;
+  transition: all 0.3s ease;
+}
+
+.btn-subscribe:hover {
+  background-color: var(--text-dark);
+  color: var(--secondary);
+}
+
+/* Input del formulario */
+.form-control {
+  border: 1px solid var(--secondary-dark);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(252, 248, 239, 0.25);
+  border-color: var(--secondary);
+}
+
+/* Divisor */
+.footer-divider {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin: 2rem 0;
+}
+
+/* Animaciones y efectos */
+@media (prefers-reduced-motion: no-preference) {
+  .btn-social i {
+    transition: transform 0.3s ease;
+  }
+  
+  .btn-social:hover i {
+    transform: scale(1.2);
+  }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-contrast: more) {
+  .footer {
+    background-color: var(--primary-dark);
+  }
+  
+  .footer-text, 
+  .footer-link, 
+  .footer-copyright {
+    color: black;
+    opacity: 1;
+  }
+  
+  .btn-social {
+    background-color: black;
+    color: white;
+  }
+}

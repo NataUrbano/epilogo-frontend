@@ -1,0 +1,277 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- Sidebar - responsivo (colapsa en móvil) -->
+    <div class="col-lg-3 mb-4 mb-lg-0">
+      <div class="card shadow-sm border-0 h-100">
+        <!-- Información del usuario -->
+        <div class="card-body text-center p-4">
+          <!-- Avatar del usuario -->
+          <div class="position-relative mx-auto mb-3" style="width: 120px; height: 120px;">
+            <div class="rounded-circle overflow-hidden w-100 h-100 bg-light">
+              <div *ngIf="user?.imageUrl; else userInitials">
+                <img [src]="user?.imageUrl" alt="Foto de perfil" class="w-100 h-100 object-fit-cover" />
+              </div>
+              <ng-template #userInitials>
+                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary">
+                  <span class="fs-3 fw-semibold">{{ getUserInitials() }}</span>
+                </div>
+              </ng-template>
+            </div>
+            <!-- Botón para cambiar la imagen -->
+            <label for="profile-image" class="position-absolute bottom-0 end-0 bg-white rounded-circle shadow-sm p-2 cursor-pointer">
+              <i class="bi bi-camera text-primary"></i>
+              <input 
+                type="file" 
+                id="profile-image" 
+                (change)="onFileSelected($event)"
+                accept="image/*"
+                class="d-none"
+              />
+            </label>
+          </div>
+          
+          <h5 class="fw-bold mb-1">{{ user?.userName }}</h5>
+          <p class="text-muted small mb-3">{{ user?.email }}</p>
+          
+          <!-- Estadísticas básicas del usuario (opcional) -->
+          <div class="row g-0 mb-3 text-center border-top border-bottom py-2">
+            <div class="col-4 border-end">
+              <div class="py-2">
+                <div class="fw-bold">0</div>
+                <div class="small text-muted">Puntos</div>
+              </div>
+            </div>
+            <div class="col-4 border-end">
+              <div class="py-2">
+                <div class="fw-bold">0</div>
+                <div class="small text-muted">Mensajes</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="py-2">
+                <div class="fw-bold">0</div>
+                <div class="small text-muted">Items</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Menú de navegación de perfil -->
+        <div class="list-group list-group-flush">
+          <a 
+            href="#profile-info"
+            class="list-group-item list-group-item-action"
+            [class.active]="activeTab === 'info'"
+            (click)="setActiveTab('info', $event)"
+          >
+            <i class="bi bi-person me-3"></i> Información Personal
+          </a>
+          <a 
+            href="#profile-security"
+            class="list-group-item list-group-item-action"
+            [class.active]="activeTab === 'security'"
+            (click)="setActiveTab('security', $event)"
+          >
+            <i class="bi bi-shield-lock me-3"></i> Seguridad
+          </a>
+          <a 
+            href="#profile-preferences"
+            class="list-group-item list-group-item-action"
+            [class.active]="activeTab === 'preferences'"
+            (click)="setActiveTab('preferences', $event)"
+          >
+            <i class="bi bi-gear me-3"></i> Preferencias
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Área principal de contenido -->
+    <div class="col-lg-9">
+      <!-- Alerta de éxito o error -->
+      <div *ngIf="successMessage" class="alert alert-success d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <div>{{ successMessage }}</div>
+      </div>
+      
+      <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <div>{{ errorMessage }}</div>
+      </div>
+      
+      <!-- Panel de información personal -->
+      <div 
+        id="profile-info"
+        class="card shadow-sm border-0 mb-4"
+        [ngClass]="{'d-none': activeTab !== 'info'}"
+      >
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0">Información Personal</h5>
+        </div>
+        <div class="card-body p-4">
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            <div class="mb-3">
+              <label for="userName" class="form-label">Nombre de usuario</label>
+              <input
+                type="text"
+                id="userName"
+                formControlName="userName"
+                class="form-control"
+                [ngClass]="{'is-invalid': profileForm.get('userName')?.invalid && (profileForm.get('userName')?.dirty || profileForm.get('userName')?.touched)}"
+              />
+              <div *ngIf="profileForm.get('userName')?.invalid && (profileForm.get('userName')?.dirty || profileForm.get('userName')?.touched)" class="invalid-feedback">
+                Nombre de usuario es requerido (mínimo 3 caracteres)
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                id="email"
+                [value]="user?.email"
+                readonly
+                class="form-control bg-light"
+              />
+              <div class="form-text">El email no puede ser cambiado</div>
+            </div>
+            
+            <!-- Campos adicionales que puedas necesitar -->
+            <div class="mb-3">
+              <label for="bio" class="form-label">Biografía</label>
+              <textarea
+                id="bio"
+                formControlName="bio"
+                class="form-control"
+                rows="3"
+                placeholder="Cuéntanos sobre ti..."
+              ></textarea>
+            </div>
+            
+            <div class="text-end">
+              <button
+                type="submit"
+                [disabled]="profileForm.invalid || isSaving || !profileForm.dirty"
+                class="btn btn-primary"
+              >
+                <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Panel de seguridad -->
+      <div 
+        id="profile-security"
+        class="card shadow-sm border-0 mb-4"
+        [ngClass]="{'d-none': activeTab !== 'security'}"
+      >
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0">Cambiar contraseña</h5>
+        </div>
+        <div class="card-body p-4">
+          <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">Contraseña actual</label>
+              <input
+                type="password"
+                id="currentPassword"
+                formControlName="currentPassword"
+                class="form-control"
+                [ngClass]="{'is-invalid': passwordForm.get('currentPassword')?.invalid && (passwordForm.get('currentPassword')?.dirty || passwordForm.get('currentPassword')?.touched)}"
+              />
+              <div *ngIf="passwordForm.get('currentPassword')?.invalid && (passwordForm.get('currentPassword')?.dirty || passwordForm.get('currentPassword')?.touched)" class="invalid-feedback">
+                Contraseña actual es requerida
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">Nueva contraseña</label>
+              <input
+                type="password"
+                id="newPassword"
+                formControlName="newPassword"
+                class="form-control"
+                [ngClass]="{'is-invalid': passwordForm.get('newPassword')?.invalid && (passwordForm.get('newPassword')?.dirty || passwordForm.get('newPassword')?.touched)}"
+              />
+              <div *ngIf="passwordForm.get('newPassword')?.invalid && (passwordForm.get('newPassword')?.dirty || passwordForm.get('newPassword')?.touched)" class="invalid-feedback">
+                La nueva contraseña debe tener al menos 6 caracteres
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="confirmNewPassword" class="form-label">Confirmar nueva contraseña</label>
+              <input
+                type="password"
+                id="confirmNewPassword"
+                formControlName="confirmNewPassword"
+                class="form-control"
+                [ngClass]="{'is-invalid': passwordForm.errors?.['passwordMismatch'] && passwordForm.get('confirmNewPassword')?.touched}"
+              />
+              <div *ngIf="passwordForm.errors?.['passwordMismatch'] && passwordForm.get('confirmNewPassword')?.touched" class="invalid-feedback">
+                Las contraseñas no coinciden
+              </div>
+            </div>
+            
+            <div class="text-end">
+              <button
+                type="submit"
+                [disabled]="passwordForm.invalid || isChangingPassword"
+                class="btn btn-primary"
+              >
+                <span *ngIf="isChangingPassword" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isChangingPassword ? 'Actualizando...' : 'Actualizar contraseña' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Panel de preferencias -->
+      <div 
+        id="profile-preferences"
+        class="card shadow-sm border-0 mb-4"
+        [ngClass]="{'d-none': activeTab !== 'preferences'}"
+      >
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0">Preferencias</h5>
+        </div>
+        <div class="card-body p-4">
+          <div class="mb-3 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="emailNotifications">
+            <label class="form-check-label" for="emailNotifications">Recibir notificaciones por email</label>
+          </div>
+          
+          <div class="mb-3 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="darkMode">
+            <label class="form-check-label" for="darkMode">Modo oscuro</label>
+          </div>
+          
+          <div class="mb-3">
+            <label for="language" class="form-label">Idioma</label>
+            <select class="form-select" id="language">
+              <option value="es" selected>Español</option>
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+            </select>
+          </div>
+          
+          <div class="text-end">
+            <button type="button" class="btn btn-primary">Guardar preferencias</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Espacio reservado para contenido futuro -->
+      <div class="card shadow-sm border-0" [ngClass]="{'d-none': activeTab !== 'placeholder'}">
+        <div class="card-body p-4 text-center">
+          <i class="bi bi-grid-3x3-gap fs-1 text-muted mb-3"></i>
+          <h5>Espacio disponible para contenido adicional</h5>
+          <p class="text-muted">Este espacio está reservado para que puedas agregar más elementos en el futuro.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
