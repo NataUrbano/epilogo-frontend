@@ -20,7 +20,9 @@ import { TranslateService, TranslateStore } from '@ngx-translate/core';
       <app-footer/>
     </div>
   `,
-  styles: [],
+  styles: [
+    
+  ],
   // TranslateStore ya está proporcionado globalmente en provideTranslation,
   // así que no es necesario duplicarlo aquí, pero dejarlo no causa problemas
   providers: [TranslateStore]

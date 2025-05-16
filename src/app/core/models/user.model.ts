@@ -4,7 +4,8 @@ export interface User {
   email: string;
   imageUrl?: string;
   registerDate: string;
-  roles: string[];
+  isActive: boolean;
+  roles: string[]; 
 }
 
 export interface UserLogin {
@@ -16,6 +17,7 @@ export interface UserRegistration {
   userName: string;
   email: string;
   password: string;
+  isActive : boolean;
 }
 
 export interface UserProfile {
@@ -37,9 +39,25 @@ export interface AuthResponse {
   userName: string;
   email: string;
   imageUrl?: string;
+  roles: string[]; 
 }
 
 export interface TokenResponse {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface UserUpdateAdmin {
+  userName?: string;
+  email?: string;
+  roles?: string[];
+  isActive?: boolean;
+}
+
+export interface UserRolesUpdate {
+  roles: string[];
+}
+
+export interface UserStatusUpdate {
+  isActive: boolean;
 }

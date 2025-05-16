@@ -39,6 +39,17 @@ export const roleGuard: CanActivateFn = (route, state) => {
   if (!requiredRole) {
     return true;
   }
+
+  // Si es un array, usa hasAnyRole; si es string, usa hasRole
+  if (Array.isArray(requiredRole)) {
+    if (authService.hasAnyRole(requiredRole)) {
+      return true;
+    }
+  } else {
+    if (authService.hasRole(requiredRole)) {
+      return true;
+    }
+  }
   
   // Check if user has the required role
   if (authService.hasRole(requiredRole)) {

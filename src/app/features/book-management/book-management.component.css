@@ -1,0 +1,28 @@
+.table th {
+  cursor: pointer;
+}
+
+.table th:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.btn-group .btn {
+  margin-right: 0.2rem;
+}
+
+.btn-group .btn:last-child {
+  margin-right: 0;
+}
+
+.form-floating > .form-control-plaintext ~ label::after,
+.form-floating > .form-control:focus ~ label::after,
+.form-floating > .form-control:not(:placeholder-shown) ~ label::after,
+.form-floating > .form-select ~ label::after {
+  background-color: transparent;
+}
+
+@media (max-width: 767.98px) {
+  .table {
+    min-width: 800px;
+  }
+}

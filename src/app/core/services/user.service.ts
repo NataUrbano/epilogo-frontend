@@ -3,7 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { User, UserUpdate } from '../models/user.model';
+import { 
+  User, 
+  UserUpdate, 
+  UserUpdateAdmin, 
+  UserRolesUpdate, 
+  UserStatusUpdate 
+} from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +59,40 @@ export class UserService {
    */
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Actualizar roles de un usuario (solo para administradores)
+   */
+  updateUserRoles(userId: number, roles: string[]): Observable<User> {
+    const request: UserRolesUpdate = { roles };
+    return this.http.put<User>(`${this.apiUrl}/${userId}/roles`, request)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Cambiar estado de un usuario (activar/desactivar)
+   */
+  updateUserStatus(userId: number, isActive: boolean): Observable<User> {
+    const request: UserStatusUpdate = { isActive };
+    return this.http.put<User>(`${this.apiUrl}/${userId}/status`, request)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Actualizar usuario completo (admin)
+   */
+  updateUserAdmin(userId: number, userData: UserUpdateAdmin): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/${userId}/admin`, userData)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Eliminar un usuario (solo admin)
+   */
+  deleteUser(userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${userId}`)
       .pipe(catchError(this.handleError));
   }
 

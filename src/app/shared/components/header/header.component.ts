@@ -27,6 +27,10 @@ export class HeaderComponent implements OnInit {
   isAuthenticated = false;
   selectedCategoryId: number | null = null;
   searchQuery: string = '';
+  
+    get hasAdminRole(): boolean {
+    return this.authService.hasRole('ROLE_ADMIN');
+    }
 
   constructor(private viewportScroller: ViewportScroller,private router: Router) {}
 
@@ -81,6 +85,8 @@ export class HeaderComponent implements OnInit {
   }
   
   ngOnInit(): void {
+
+
     // Inicializar idioma
     this.currentLanguage = localStorage.getItem('selectedLanguage') || 'es';
     this.translateService.use(this.currentLanguage);

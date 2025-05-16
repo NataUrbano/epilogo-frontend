@@ -49,6 +49,7 @@ export class AuthService {
 
   // Register a new user
   register(userRegistration: UserRegistration): Observable<AuthResponse> {
+        console.log(userRegistration)
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userRegistration).pipe(
       tap(response => this.handleAuthentication(response)),
       catchError(error => {
@@ -61,7 +62,11 @@ export class AuthService {
   // Login user
   login(userLogin: UserLogin): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, userLogin).pipe(
-      tap(response => this.handleAuthentication(response)),
+      tap(response => {
+        this.handleAuthentication(response)
+        console.log('Login response:', JSON.stringify(response, null, 2));
+        console.log('Roles in response:', response.roles);
+      }),
       catchError(error => {
         console.error('Login error', error);
         return throwError(() => new Error(error.error?.message || 'Login failed'));
@@ -84,12 +89,13 @@ export class AuthService {
       email: userData.email,
       imageUrl: userData.imageUrl,
       registerDate: new Date().toISOString(), // This should come from the backend
-      roles: [], // This should come from the backend
+      roles: userData.roles || [],
+      isActive: true
     };
     
     // Store user data
     localStorage.setItem('user_data', JSON.stringify(user));
-    
+    console.log(user)
     // Update user subject
     this.currentUserSubject.next(user);
   }
@@ -189,7 +195,7 @@ export class AuthService {
     );
   }
 
-  // Get current user information from the API
+  // Get current user information from the API - FIXED to return Observable
   getCurrentUserInfo(): Observable<User> {
     return this.http.get<User>(`${environment.apiUrl}/users/me`).pipe(
       tap(user => {
@@ -203,6 +209,10 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('Error getting current user info', error);
+        // Si hay un error 401, posiblemente el token expiró
+        if (error.status === 401) {
+          this.logout();
+        }
         return throwError(() => new Error(error.error?.message || 'Failed to get user information'));
       })
     );
@@ -211,6 +221,21 @@ export class AuthService {
   // Check if user has specific role
   hasRole(role: string): boolean {
     const user = this.currentUserSubject.value;
-    return !!user?.roles.includes(role);
+    if (!user || !user.roles) {
+      return false;
+    }
+    
+    // Normalize to handle both formats: 'ADMIN' or 'ROLE_ADMIN'
+    const normalizedRole = role.startsWith('ROLE_') ? role : `ROLE_${role}`;
+    return user.roles.some(r => 
+      r === normalizedRole || 
+      r === role || 
+      r === normalizedRole.replace('ROLE_', '')
+    );
+  }
+
+  // Check if user has any of the provided roles
+  hasAnyRole(roles: string[]): boolean {
+    return roles.some(role => this.hasRole(role));
   }
 }

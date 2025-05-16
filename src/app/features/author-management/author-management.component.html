@@ -1,0 +1,336 @@
+<div class="container-fluid px-0">
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h1 class="h3 fw-bold mb-1">Gestión de Autores</h1>
+              <p class="text-muted mb-0">Administra todos los autores en la plataforma</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+              <button class="btn btn-primary" (click)="showAddAuthorModal()">
+                <i class="bi bi-plus-circle me-2"></i>Nuevo Autor
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form [formGroup]="searchForm" (ngSubmit)="searchAuthors()">
+            <div class="row g-3">
+              <div class="col-md-10">
+                <div class="form-floating">
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="searchQuery" 
+                    placeholder="Buscar autores..." 
+                    formControlName="query"
+                  >
+                  <label for="searchQuery">Buscar por nombre</label>
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <button type="submit" class="btn btn-primary h-100 w-100">
+                  <i class="bi bi-search me-2"></i>Buscar
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authors Table Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+          <!-- Loading state -->
+          <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+
+          <!-- Empty state -->
+          <div *ngIf="!isLoading && authors.length === 0" class="text-center py-5">
+            <i class="bi bi-person text-muted" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">No se encontraron autores</h4>
+            <p class="text-muted">Intenta con diferentes términos de búsqueda o agrega un nuevo autor.</p>
+          </div>
+
+          <!-- Authors table -->
+          <div *ngIf="!isLoading && authors.length > 0" class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-3" (click)="sortBy('authorName')">
+                    Nombre
+                    <i *ngIf="searchParams.sortBy === 'authorName'" 
+                       class="bi" 
+                       [ngClass]="searchParams.sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'">
+                    </i>
+                  </th>
+                  <th class="py-3">Nacimiento</th>
+                  <th class="py-3">Fallecimiento</th>
+                  <th class="py-3" (click)="sortBy('totalBooks')">
+                    Libros
+                    <i *ngIf="searchParams.sortBy === 'totalBooks'" 
+                       class="bi" 
+                       [ngClass]="searchParams.sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'">
+                    </i>
+                  </th>
+                  <th class="py-3">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let author of authors">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <img 
+                        [src]="author.imageUrl || '/assets/images/default-author.jpg'" 
+                        alt="Foto"
+                        class="me-2 rounded-circle"
+                        style="width: 40px; height: 40px; object-fit: cover;"
+                      >
+                      <span>{{ author.authorName }}</span>
+                    </div>
+                  </td>
+                  <td>{{ author.birthYear || '-' }}</td>
+                  <td>{{ author.deathYear || '-' }}</td>
+                  <td>{{ author.totalBooks || 0 }}</td>
+                  <td>
+                    <div class="btn-group">
+                      <button class="btn btn-sm btn-outline-primary" (click)="showEditAuthorModal(author)">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-secondary" (click)="showUploadImageModal(author)">
+                        <i class="bi bi-image"></i>
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger" (click)="showDeleteConfirmation(author)" 
+                              [disabled]="author.totalBooks > 0">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div *ngIf="!isLoading && totalPages > 1" class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
+          <div>
+            <span class="text-muted small">Mostrando {{ authors.length }} de {{ totalElements }} autores</span>
+          </div>
+          <nav aria-label="Paginación de autores">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
+                <button class="page-link" (click)="goToPage(currentPage - 1)" aria-label="Anterior">
+                  <span aria-hidden="true">&laquo;</span>
+                </button>
+              </li>
+              <li *ngFor="let page of getPageNumbers()" class="page-item" [ngClass]="{'active': page === currentPage}">
+                <button class="page-link" (click)="goToPage(page)">{{ page + 1 }}</button>
+              </li>
+              <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages - 1}">
+                <button class="page-link" (click)="goToPage(currentPage + 1)" aria-label="Siguiente">
+                  <span aria-hidden="true">&raquo;</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Author Modal -->
+<div class="modal fade" id="authorModal" tabindex="-1" aria-labelledby="authorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="authorModalLabel">{{ isEditMode ? 'Editar Autor' : 'Agregar Nuevo Autor' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="authorForm">
+          <div class="row g-3">
+            <div class="col-md-12">
+              <div class="form-floating">
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="authorName" 
+                  placeholder="Nombre del autor" 
+                  formControlName="authorName"
+                >
+                <label for="authorName">Nombre del autor*</label>
+                <div *ngIf="authorForm.get('authorName')?.invalid && authorForm.get('authorName')?.touched" class="text-danger mt-1 small">
+                  El nombre es obligatorio
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="birthYear" 
+                  placeholder="Año de nacimiento" 
+                  formControlName="birthYear"
+                >
+                <label for="birthYear">Año de nacimiento</label>
+                <div *ngIf="authorForm.get('birthYear')?.invalid && authorForm.get('birthYear')?.touched" class="text-danger mt-1 small">
+                  El año debe ser válido
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-floating">
+                <input 
+                  type="number" 
+                  class="form-control" 
+                  id="deathYear" 
+                  placeholder="Año de fallecimiento" 
+                  formControlName="deathYear"
+                >
+                <label for="deathYear">Año de fallecimiento</label>
+                <div *ngIf="authorForm.get('deathYear')?.invalid && authorForm.get('deathYear')?.touched" class="text-danger mt-1 small">
+                  El año debe ser válido
+                </div>
+                <div *ngIf="authorForm.hasError('yearSequence')" class="text-danger mt-1 small">
+                  El año de fallecimiento debe ser posterior al de nacimiento
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-12">
+              <div class="form-floating">
+                <textarea 
+                  class="form-control" 
+                  id="biography" 
+                  placeholder="Biografía" 
+                  formControlName="biography"
+                  style="height: 120px"
+                ></textarea>
+                <label for="biography">Biografía</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="saveAuthor()" 
+          [disabled]="authorForm.invalid || isSubmitting"
+        >
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">Subir Imagen</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3 text-center">
+          <img 
+            [src]="selectedAuthor?.imageUrl || '/assets/images/default-author.jpg'" 
+            alt="Imagen actual"
+            class="img-thumbnail mb-3 rounded-circle"
+            style="width: 150px; height: 150px; object-fit: cover;"
+          >
+          <h5>{{ selectedAuthor?.authorName }}</h5>
+        </div>
+        
+        <div class="mb-3">
+          <label for="authorImage" class="form-label">Seleccionar nueva imagen</label>
+          <input class="form-control" type="file" id="authorImage" accept="image/*" (change)="onFileSelected($event)">
+          <div class="form-text">Se recomienda una imagen cuadrada de al menos 300x300 píxeles.</div>
+        </div>
+        
+        <div *ngIf="selectedFile" class="mb-3">
+          <p class="mb-1">Vista previa:</p>
+          <img 
+            [src]="filePreview" 
+            alt="Vista previa"
+            class="img-thumbnail rounded-circle"
+            style="width: 100px; height: 100px; object-fit: cover;"
+          >
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="uploadImage()" 
+          [disabled]="!selectedFile || isSubmitting"
+        >
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Subir Imagen
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que quieres eliminar al autor <strong>{{ selectedAuthor?.authorName }}</strong>?</p>
+        <p class="text-danger">Esta acción no se puede deshacer.</p>
+        <div *ngIf="selectedAuthor && selectedAuthor.totalBooks && selectedAuthor.totalBooks > 0" class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          No se puede eliminar este autor porque tiene {{ selectedAuthor.totalBooks }} libros asociados.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button 
+          type="button" 
+          class="btn btn-danger" 
+          (click)="deleteAuthor()" 
+          [disabled]="(selectedAuthor && selectedAuthor.totalBooks && selectedAuthor.totalBooks > 0) || isSubmitting"
+        >
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

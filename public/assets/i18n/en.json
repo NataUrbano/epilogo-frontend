@@ -30,7 +30,8 @@
   "NAVIGATION": {
     "HOME": "Home",
     "BOOKS": "Books",
-    "CATEGORIES": "Categories",
+    "MYRESERVATIONS": "My Reservations",
+    "DASHBOARD" : "Dashboard",
     "SERVICES": "Services",
     "CONTACT": "Contact",
     "AUTHORS": "Authors"

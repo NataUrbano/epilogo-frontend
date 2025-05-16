@@ -377,10 +377,11 @@ export class ProfileComponent implements OnInit {
     
     // Also fetch latest user data from the server
     this.authService.getCurrentUserInfo().subscribe({
-      next: () => {
+      next: (user : User)  => {
         // User data is updated via the currentUser$ subscription above
+        return
       },
-      error: (error) => {
+      error: (error : Error) => {
         this.errorMessage = error.message || 'Error al cargar la información del usuario.';
       }
     });

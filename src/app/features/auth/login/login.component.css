@@ -24,9 +24,7 @@
   }
   
   /* Estilos de los formularios */
-  .form-control {
-    margin-bottom: 1.5rem;
-  }
+
   
   input:focus {
     border-color: #4f46e5;

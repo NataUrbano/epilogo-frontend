@@ -149,10 +149,12 @@ export class RegisterComponent {
     const userRegistration: UserRegistration = {
       userName: this.registerForm.value.userName,
       email: this.registerForm.value.email,
-      password: this.registerForm.value.password
+      password: this.registerForm.value.password,
+      isActive : true
     };
     
     this.authService.register(userRegistration).subscribe({
+      
       next: () => {
         this.router.navigate(['/']);
       },

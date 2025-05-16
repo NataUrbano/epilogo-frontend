@@ -8,6 +8,15 @@
   --text-dark: #343a40;
 }
 
+:host {
+      display: block;
+}
+
+ main {
+      background-color: #f8f9fa;
+      padding-bottom: 30px;
+}
+
 html {
   scroll-behavior: smooth;
 }

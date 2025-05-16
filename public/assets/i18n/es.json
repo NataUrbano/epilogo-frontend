@@ -28,7 +28,8 @@
   "NAVIGATION": {
     "HOME": "Inicio",
     "BOOKS": "Libros",
-    "CATEGORIES": "Categorías",
+    "MYRESERVATIONS": "Mis reservas",
+    "DASHBOARD" : "Panel de control",
     "SERVICES": "Servicios",
     "CONTACT": "Contacto",
     "AUTHORS": "Autores"

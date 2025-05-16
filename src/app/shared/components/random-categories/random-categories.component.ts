@@ -36,12 +36,19 @@ export class RandomCategoriesComponent implements OnInit {
       )
       .subscribe({
         next: (categories) => {
-          // Obtener 5 categorías aleatorias si hay más de 5
-          if (categories.length > 5) {
-            this.categories = this.getRandomCategories(categories, 5);
+          // Obtener 5 categorías aleatorias si hay más de 10
+          if (categories.length > 10) {
+            
+            this.categories = this.getRandomCategories(categories, 10);
+            
           } else {
             this.categories = categories;
           }
+
+           // Imprimir en consola categoryName e imageUrl de cada categoría
+        this.categories.forEach(category => {
+          console.log(`CategoryName: ${category.categoryName}, ImageUrl: ${category.imageUrl}`);
+        }); 
         },
         error: () => {
           this.error = true;

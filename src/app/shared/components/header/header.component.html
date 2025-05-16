@@ -143,20 +143,19 @@
               (click)="goToLibros()"
               routerLinkActive="active">{{ 'NAVIGATION.BOOKS' | translate }}</a>
           </li>
+         <li class="nav-item">
+            <a class="nav-link"
+              [routerLink]="hasAdminRole ? '/dashboard' : '/profile'"
+              routerLinkActive="active">
+              {{ hasAdminRole ? ('NAVIGATION.DASHBOARD' | translate) : ('NAVIGATION.MYRESERVATIONS' | translate) }}
+            </a>
+          </li>
+
           <li class="nav-item">
-            <a class="nav-link" 
-              routerLink="/categories" 
-              routerLinkActive="active">{{ 'NAVIGATION.CATEGORIES' | translate }}</a>
+            <a class="nav-link">{{ 'NAVIGATION.SERVICES' | translate }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" 
-              routerLink="/services" 
-              routerLinkActive="active">{{ 'NAVIGATION.SERVICES' | translate }}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" 
-              routerLink="/contact" 
-              routerLinkActive="active">{{ 'NAVIGATION.CONTACT' | translate }}</a>
+            <a class="nav-link">{{ 'NAVIGATION.CONTACT' | translate }}</a>
           </li>
         </ul>
       </nav>
@@ -189,22 +188,19 @@
               routerLinkActive="active"
               (click)="closeMobileMenu(); goToLibros()">{{ 'NAVIGATION.BOOKS' | translate }}</a>
           </li>
-          <li>
-            <a class="mobile-nav-link" 
-              routerLink="/categories" 
-              routerLinkActive="active"
-              (click)="closeMobileMenu()">{{ 'NAVIGATION.CATEGORIES' | translate }}</a>
+          <li class="nav-item">
+            <a class="nav-link"
+              [routerLink]="hasAdminRole ? '/dashboard' : '/profile'"
+              routerLinkActive="active">
+              {{ hasAdminRole ? ('NAVIGATION.DASHBOARD' | translate) : ('NAVIGATION.MYRESERVATIONS' | translate) }}
+            </a>
           </li>
           <li>
             <a class="mobile-nav-link" 
-              routerLink="/services" 
-              routerLinkActive="active"
               (click)="closeMobileMenu()">{{ 'NAVIGATION.SERVICES' | translate }}</a>
           </li>
           <li>
             <a class="mobile-nav-link" 
-              routerLink="/contact" 
-              routerLinkActive="active"
               (click)="closeMobileMenu()">{{ 'NAVIGATION.CONTACT' | translate }}</a>
           </li>
         </ul>
