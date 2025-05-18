@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: '/api' // Base URL relativa para producción
+  apiUrl: 'https://epilogo-backend.onrender.com/api'
 };
