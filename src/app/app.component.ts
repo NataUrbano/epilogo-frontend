@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { TranslateService, TranslateStore } from '@ngx-translate/core';
+import { WarmupService } from './core/services/warmup.service';
 
 @Component({
   selector: 'app-root',
@@ -27,10 +28,11 @@ import { TranslateService, TranslateStore } from '@ngx-translate/core';
   // así que no es necesario duplicarlo aquí, pero dejarlo no causa problemas
   providers: [TranslateStore]
 })
-export class AppComponent {
+export class AppComponent implements OnInit  {
   currentYear = new Date().getFullYear();
+  backendWaking = true;
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private warmupService: WarmupService) {
     // Configuración más sencilla
     translate.setDefaultLang('es');
     
@@ -42,5 +44,14 @@ export class AppComponent {
       const browserLang = translate.getBrowserLang();
       translate.use(browserLang?.match(/es|en/) ? browserLang : 'es');
     }
+  }
+  ngOnInit(): void {
+    // Despertar el backend al iniciar la aplicación
+    this.warmupService.warmupBackend();
+    
+    // Mostrar mensaje de "despertando" durante unos segundos
+    setTimeout(() => {
+      this.backendWaking = false;
+    }, 5000);
   }
 }
