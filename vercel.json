@@ -1,16 +1,7 @@
 {
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/browser/index.html" }
   ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "s-maxage=1, stale-while-revalidate" }
-      ]
-    }
-  ],
-  "buildCommand": "ng build",
-  "outputDirectory": "dist/epilogo-frontend",
-  "installCommand": "npm install"
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "dist/epilogo-frontend"
 }
