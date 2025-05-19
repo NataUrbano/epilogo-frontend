@@ -1,9 +1,14 @@
 {
   "rewrites": [
     { "source": "/assets/(.*)", "destination": "/browser/assets/$1" },
-    { "source": "/_next/(.*)", "destination": "/browser/_next/$1" },
-    { "source": "/static/(.*)", "destination": "/browser/static/$1" },
-    { "source": "/(.*\\.[^/]*)", "destination": "/browser/$1" },
+    { "source": "/favicon.ico", "destination": "/browser/favicon.ico" },
+    { "source": "/(.*)\\.js", "destination": "/browser/$1.js" },
+    { "source": "/(.*)\\.css", "destination": "/browser/$1.css" },
+    { "source": "/(.*)\\.woff", "destination": "/browser/$1.woff" },
+    { "source": "/(.*)\\.woff2", "destination": "/browser/$1.woff2" },
+    { "source": "/(.*)\\.ttf", "destination": "/browser/$1.ttf" },
+    { "source": "/(.*)\\.eot", "destination": "/browser/$1.eot" },
+    { "source": "/(.*)\\.svg", "destination": "/browser/$1.svg" },
     { "source": "/(.*)", "destination": "/browser/index.html" }
   ],
   "buildCommand": "npm run build",
