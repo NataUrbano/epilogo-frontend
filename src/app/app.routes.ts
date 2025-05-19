@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/auth/auth.guard';
+import { authGuard, roleGuard } from './core/auth/auth.guard';
 import { ProfileComponent } from './features/profile/profile/profile.component';
 import { ReservationDetailComponent } from './shared/components/reservation-detail/reservation-detail.component';
 
@@ -16,7 +16,8 @@ export const APP_ROUTES: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES),
-    canActivate: [authGuard]
+    canActivate: [authGuard, roleGuard],
+    data: { role: ['ROLE_ADMIN', 'ROLE_LIBRARIAN'] }
   },
   {
     path: 'unauthorized',

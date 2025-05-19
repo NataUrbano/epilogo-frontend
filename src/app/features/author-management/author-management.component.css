@@ -1,3 +1,7 @@
+.table td {
+  vertical-align: middle;
+}
+
 .table th {
   cursor: pointer;
 }
@@ -7,26 +11,16 @@
 }
 
 .btn-group .btn {
-  margin-right: 0.2rem;
+  padding: 0.25rem 0.5rem;
 }
 
-.btn-group .btn:last-child {
-  margin-right: 0;
-}
-
-.form-floating > .form-control-plaintext ~ label::after,
-.form-floating > .form-control:focus ~ label::after,
-.form-floating > .form-control:not(:placeholder-shown) ~ label::after,
-.form-floating > .form-select ~ label::after {
-  background-color: transparent;
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 @media (max-width: 767.98px) {
-  .table {
-    min-width: 800px;
+  .table-responsive {
+    overflow-x: auto;
   }
-}
-
-.rounded-circle {
-  object-fit: cover;
 }

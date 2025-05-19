@@ -20,12 +20,9 @@ export class AuthService {
   private router = inject(Router);
   private apiUrl = `${environment.apiUrl}/auth`;
   
-  // User state using BehaviorSubject for compatibility with components
-  // that haven't migrated to signals yet
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
   
-  // JWT tokens
   private accessTokenKey = 'access_token';
   private refreshTokenKey = 'refresh_token';
 
@@ -33,7 +30,6 @@ export class AuthService {
     this.loadUserFromStorage();
   }
 
-  // Load user from storage on service initialization
   private loadUserFromStorage(): void {
     const userData = localStorage.getItem('user_data');
     if (userData) {
@@ -47,9 +43,7 @@ export class AuthService {
     }
   }
 
-  // Register a new user
   register(userRegistration: UserRegistration): Observable<AuthResponse> {
-        console.log(userRegistration)
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userRegistration).pipe(
       tap(response => this.handleAuthentication(response)),
       catchError(error => {
@@ -59,13 +53,10 @@ export class AuthService {
     );
   }
 
-  // Login user
   login(userLogin: UserLogin): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, userLogin).pipe(
       tap(response => {
         this.handleAuthentication(response)
-        console.log('Login response:', JSON.stringify(response, null, 2));
-        console.log('Roles in response:', response.roles);
       }),
       catchError(error => {
         console.error('Login error', error);
@@ -74,62 +65,48 @@ export class AuthService {
     );
   }
 
-  // Handle authentication response
   private handleAuthentication(authResponse: AuthResponse): void {
     const { accessToken, refreshToken, ...userData } = authResponse;
     
-    // Store tokens
     localStorage.setItem(this.accessTokenKey, accessToken);
     localStorage.setItem(this.refreshTokenKey, refreshToken);
     
-    // Create user object
     const user: User = {
       userId: userData.userId,
       userName: userData.userName,
       email: userData.email,
       imageUrl: userData.imageUrl,
-      registerDate: new Date().toISOString(), // This should come from the backend
+      registerDate: new Date().toISOString(),
       roles: userData.roles || [],
       isActive: true
     };
     
-    // Store user data
     localStorage.setItem('user_data', JSON.stringify(user));
-    console.log(user)
-    // Update user subject
     this.currentUserSubject.next(user);
   }
 
-  // Logout user
   logout(): void {
-    // Clear storage
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
     localStorage.removeItem('user_data');
     
-    // Clear user subject
     this.currentUserSubject.next(null);
     
-    // Navigate to login
     this.router.navigate(['/auth/login']);
   }
 
-  // Check if user is authenticated
   isAuthenticated(): boolean {
     return !!this.getAccessToken();
   }
 
-  // Get access token
   getAccessToken(): string | null {
     return localStorage.getItem(this.accessTokenKey);
   }
 
-  // Get refresh token
   getRefreshToken(): string | null {
     return localStorage.getItem(this.refreshTokenKey);
   }
 
-  // Refresh token
   refreshToken(): Observable<TokenResponse> {
     const refreshToken = this.getRefreshToken();
     
@@ -151,7 +128,6 @@ export class AuthService {
     );
   }
 
-  // Update user profile
   updateProfile(userUpdate: UserUpdate): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/profile`, userUpdate).pipe(
       tap(updatedUser => {
@@ -169,17 +145,15 @@ export class AuthService {
     );
   }
 
-  // Update user profile image
   updateProfileImage(imageFile: File): Observable<User> {
     const formData = new FormData();
-    formData.append('file', imageFile); // Cambiado de 'image' a 'file' para coincidir con el backend
+    formData.append('file', imageFile);
     
     const currentUser = this.currentUserSubject.value;
     if (!currentUser) {
       return throwError(() => new Error('User not authenticated'));
     }
     
-    // Usamos la ruta del controlador de usuarios en lugar de auth
     return this.http.post<User>(`${environment.apiUrl}/users/${currentUser.userId}/profile-image`, formData).pipe(
       tap(updatedUser => {
         if (currentUser) {
@@ -195,11 +169,9 @@ export class AuthService {
     );
   }
 
-  // Get current user information from the API - FIXED to return Observable
   getCurrentUserInfo(): Observable<User> {
     return this.http.get<User>(`${environment.apiUrl}/users/me`).pipe(
       tap(user => {
-        // Update the user object with the latest data from the server
         const currentUser = this.currentUserSubject.value;
         if (currentUser) {
           const mergedUser = { ...currentUser, ...user };
@@ -209,7 +181,6 @@ export class AuthService {
       }),
       catchError(error => {
         console.error('Error getting current user info', error);
-        // Si hay un error 401, posiblemente el token expiró
         if (error.status === 401) {
           this.logout();
         }
@@ -218,14 +189,12 @@ export class AuthService {
     );
   }
 
-  // Check if user has specific role
   hasRole(role: string): boolean {
     const user = this.currentUserSubject.value;
     if (!user || !user.roles) {
       return false;
     }
     
-    // Normalize to handle both formats: 'ADMIN' or 'ROLE_ADMIN'
     const normalizedRole = role.startsWith('ROLE_') ? role : `ROLE_${role}`;
     return user.roles.some(r => 
       r === normalizedRole || 
@@ -234,7 +203,6 @@ export class AuthService {
     );
   }
 
-  // Check if user has any of the provided roles
   hasAnyRole(roles: string[]): boolean {
     return roles.some(role => this.hasRole(role));
   }

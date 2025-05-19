@@ -6,12 +6,12 @@
         <div class="card-body p-4">
           <div class="row align-items-center">
             <div class="col-md-8">
-              <h1 class="h3 fw-bold mb-1">Gestión de Autores</h1>
-              <p class="text-muted mb-0">Administra todos los autores en la plataforma</p>
+              <h1 class="h3 fw-bold mb-1">{{ 'AUTHORS.MANAGEMENT_TITLE' | translate }}</h1>
+              <p class="text-muted mb-0">{{ 'AUTHORS.MANAGEMENT_SUBTITLE' | translate }}</p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
               <button class="btn btn-primary" (click)="showAddAuthorModal()">
-                <i class="bi bi-plus-circle me-2"></i>Nuevo Autor
+                <i class="bi bi-plus-circle me-2"></i>{{ 'AUTHORS.NEW_AUTHOR' | translate }}
               </button>
             </div>
           </div>
@@ -33,16 +33,16 @@
                     type="text" 
                     class="form-control" 
                     id="searchQuery" 
-                    placeholder="Buscar autores..." 
+                    placeholder="{{ 'AUTHORS.SEARCH_AUTHORS' | translate }}" 
                     formControlName="query"
                   >
-                  <label for="searchQuery">Buscar por nombre</label>
+                  <label for="searchQuery">{{ 'AUTHORS.SEARCH_BY_NAME' | translate }}</label>
                 </div>
               </div>
               
               <div class="col-md-2">
                 <button type="submit" class="btn btn-primary h-100 w-100">
-                  <i class="bi bi-search me-2"></i>Buscar
+                  <i class="bi bi-search me-2"></i>{{ 'COMMON.SEARCH' | translate }}
                 </button>
               </div>
             </div>
@@ -60,15 +60,15 @@
           <!-- Loading state -->
           <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Cargando...</span>
+              <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
             </div>
           </div>
 
           <!-- Empty state -->
           <div *ngIf="!isLoading && authors.length === 0" class="text-center py-5">
             <i class="bi bi-person text-muted" style="font-size: 3rem;"></i>
-            <h4 class="mt-3">No se encontraron autores</h4>
-            <p class="text-muted">Intenta con diferentes términos de búsqueda o agrega un nuevo autor.</p>
+            <h4 class="mt-3">{{ 'AUTHORS.NO_AUTHORS_FOUND' | translate }}</h4>
+            <p class="text-muted">{{ 'AUTHORS.TRY_DIFFERENT_SEARCH' | translate }}</p>
           </div>
 
           <!-- Authors table -->
@@ -77,22 +77,22 @@
               <thead class="table-light">
                 <tr>
                   <th class="py-3" (click)="sortBy('authorName')">
-                    Nombre
+                    {{ 'AUTHORS.NAME' | translate }}
                     <i *ngIf="searchParams.sortBy === 'authorName'" 
                        class="bi" 
                        [ngClass]="searchParams.sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'">
                     </i>
                   </th>
-                  <th class="py-3">Nacimiento</th>
-                  <th class="py-3">Fallecimiento</th>
+                  <th class="py-3">{{ 'AUTHORS.BIRTH_YEAR' | translate }}</th>
+                  <th class="py-3">{{ 'AUTHORS.DEATH_YEAR' | translate }}</th>
                   <th class="py-3" (click)="sortBy('totalBooks')">
-                    Libros
+                    {{ 'AUTHORS.BOOKS' | translate }}
                     <i *ngIf="searchParams.sortBy === 'totalBooks'" 
                        class="bi" 
                        [ngClass]="searchParams.sortDirection === 'asc' ? 'bi-sort-up' : 'bi-sort-down'">
                     </i>
                   </th>
-                  <th class="py-3">Acciones</th>
+                  <th class="py-3">{{ 'COMMON.ACTIONS' | translate }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -101,7 +101,7 @@
                     <div class="d-flex align-items-center">
                       <img 
                         [src]="author.imageUrl || '/assets/images/default-author.jpg'" 
-                        alt="Foto"
+                        alt="{{ 'AUTHORS.PHOTO' | translate }}"
                         class="me-2 rounded-circle"
                         style="width: 40px; height: 40px; object-fit: cover;"
                       >
@@ -134,12 +134,12 @@
         <!-- Pagination -->
         <div *ngIf="!isLoading && totalPages > 1" class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
           <div>
-            <span class="text-muted small">Mostrando {{ authors.length }} de {{ totalElements }} autores</span>
+            <span class="text-muted small">{{ 'PAGINATION.SHOWING' | translate:{current: authors.length, total: totalElements} }}</span>
           </div>
-          <nav aria-label="Paginación de autores">
+          <nav [attr.aria-label]="'AUTHORS.PAGINATION_LABEL' | translate">
             <ul class="pagination pagination-sm mb-0">
               <li class="page-item" [ngClass]="{'disabled': currentPage === 0}">
-                <button class="page-link" (click)="goToPage(currentPage - 1)" aria-label="Anterior">
+                <button class="page-link" (click)="goToPage(currentPage - 1)" [attr.aria-label]="'PAGINATION.PREVIOUS_PAGE' | translate">
                   <span aria-hidden="true">&laquo;</span>
                 </button>
               </li>
@@ -147,7 +147,7 @@
                 <button class="page-link" (click)="goToPage(page)">{{ page + 1 }}</button>
               </li>
               <li class="page-item" [ngClass]="{'disabled': currentPage === totalPages - 1}">
-                <button class="page-link" (click)="goToPage(currentPage + 1)" aria-label="Siguiente">
+                <button class="page-link" (click)="goToPage(currentPage + 1)" [attr.aria-label]="'PAGINATION.NEXT_PAGE' | translate">
                   <span aria-hidden="true">&raquo;</span>
                 </button>
               </li>
@@ -164,7 +164,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="authorModalLabel">{{ isEditMode ? 'Editar Autor' : 'Agregar Nuevo Autor' }}</h5>
+        <h5 class="modal-title" id="authorModalLabel">{{ (isEditMode ? 'AUTHORS.EDIT_AUTHOR' : 'AUTHORS.ADD_AUTHOR') | translate }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -176,12 +176,12 @@
                   type="text" 
                   class="form-control" 
                   id="authorName" 
-                  placeholder="Nombre del autor" 
+                  placeholder="{{ 'AUTHORS.AUTHOR_NAME' | translate }}" 
                   formControlName="authorName"
                 >
-                <label for="authorName">Nombre del autor*</label>
+                <label for="authorName">{{ 'AUTHORS.AUTHOR_NAME_REQUIRED' | translate }}</label>
                 <div *ngIf="authorForm.get('authorName')?.invalid && authorForm.get('authorName')?.touched" class="text-danger mt-1 small">
-                  El nombre es obligatorio
+                  {{ 'AUTHORS.NAME_REQUIRED' | translate }}
                 </div>
               </div>
             </div>
@@ -192,12 +192,12 @@
                   type="number" 
                   class="form-control" 
                   id="birthYear" 
-                  placeholder="Año de nacimiento" 
+                  placeholder="{{ 'AUTHORS.BIRTH_YEAR' | translate }}" 
                   formControlName="birthYear"
                 >
-                <label for="birthYear">Año de nacimiento</label>
+                <label for="birthYear">{{ 'AUTHORS.BIRTH_YEAR' | translate }}</label>
                 <div *ngIf="authorForm.get('birthYear')?.invalid && authorForm.get('birthYear')?.touched" class="text-danger mt-1 small">
-                  El año debe ser válido
+                  {{ 'AUTHORS.VALID_YEAR_REQUIRED' | translate }}
                 </div>
               </div>
             </div>
@@ -208,15 +208,15 @@
                   type="number" 
                   class="form-control" 
                   id="deathYear" 
-                  placeholder="Año de fallecimiento" 
+                  placeholder="{{ 'AUTHORS.DEATH_YEAR' | translate }}" 
                   formControlName="deathYear"
                 >
-                <label for="deathYear">Año de fallecimiento</label>
+                <label for="deathYear">{{ 'AUTHORS.DEATH_YEAR' | translate }}</label>
                 <div *ngIf="authorForm.get('deathYear')?.invalid && authorForm.get('deathYear')?.touched" class="text-danger mt-1 small">
-                  El año debe ser válido
+                  {{ 'AUTHORS.VALID_YEAR_REQUIRED' | translate }}
                 </div>
                 <div *ngIf="authorForm.hasError('yearSequence')" class="text-danger mt-1 small">
-                  El año de fallecimiento debe ser posterior al de nacimiento
+                  {{ 'AUTHORS.YEAR_SEQUENCE_ERROR' | translate }}
                 </div>
               </div>
             </div>
@@ -226,18 +226,18 @@
                 <textarea 
                   class="form-control" 
                   id="biography" 
-                  placeholder="Biografía" 
+                  placeholder="{{ 'AUTHORS.BIOGRAPHY' | translate }}" 
                   formControlName="biography"
                   style="height: 120px"
                 ></textarea>
-                <label for="biography">Biografía</label>
+                <label for="biography">{{ 'AUTHORS.BIOGRAPHY' | translate }}</label>
               </div>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'COMMON.CANCEL' | translate }}</button>
         <button 
           type="button" 
           class="btn btn-primary" 
@@ -245,7 +245,7 @@
           [disabled]="authorForm.invalid || isSubmitting"
         >
           <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+          {{ (isEditMode ? 'COMMON.UPDATE' : 'COMMON.SAVE') | translate }}
         </button>
       </div>
     </div>
@@ -257,14 +257,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="imageModalLabel">Subir Imagen</h5>
+        <h5 class="modal-title" id="imageModalLabel">{{ 'AUTHORS.UPLOAD_IMAGE' | translate }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="mb-3 text-center">
           <img 
             [src]="selectedAuthor?.imageUrl || '/assets/images/default-author.jpg'" 
-            alt="Imagen actual"
+            alt="{{ 'AUTHORS.CURRENT_IMAGE' | translate }}"
             class="img-thumbnail mb-3 rounded-circle"
             style="width: 150px; height: 150px; object-fit: cover;"
           >
@@ -272,23 +272,23 @@
         </div>
         
         <div class="mb-3">
-          <label for="authorImage" class="form-label">Seleccionar nueva imagen</label>
+          <label for="authorImage" class="form-label">{{ 'AUTHORS.SELECT_NEW_IMAGE' | translate }}</label>
           <input class="form-control" type="file" id="authorImage" accept="image/*" (change)="onFileSelected($event)">
-          <div class="form-text">Se recomienda una imagen cuadrada de al menos 300x300 píxeles.</div>
+          <div class="form-text">{{ 'AUTHORS.IMAGE_RECOMMENDATION' | translate }}</div>
         </div>
         
         <div *ngIf="selectedFile" class="mb-3">
-          <p class="mb-1">Vista previa:</p>
+          <p class="mb-1">{{ 'AUTHORS.PREVIEW' | translate }}:</p>
           <img 
             [src]="filePreview" 
-            alt="Vista previa"
+            alt="{{ 'AUTHORS.PREVIEW' | translate }}"
             class="img-thumbnail rounded-circle"
             style="width: 100px; height: 100px; object-fit: cover;"
           >
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'COMMON.CANCEL' | translate }}</button>
         <button 
           type="button" 
           class="btn btn-primary" 
@@ -296,7 +296,7 @@
           [disabled]="!selectedFile || isSubmitting"
         >
           <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Subir Imagen
+          {{ 'AUTHORS.UPLOAD_IMAGE' | translate }}
         </button>
       </div>
     </div>
@@ -308,19 +308,19 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+        <h5 class="modal-title" id="deleteModalLabel">{{ 'AUTHORS.CONFIRM_DELETE' | translate }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>¿Estás seguro de que quieres eliminar al autor <strong>{{ selectedAuthor?.authorName }}</strong>?</p>
-        <p class="text-danger">Esta acción no se puede deshacer.</p>
+        <p>{{ 'AUTHORS.DELETE_CONFIRMATION' | translate }} <strong>{{ selectedAuthor?.authorName }}</strong>?</p>
+        <p class="text-danger">{{ 'COMMON.CANNOT_UNDO' | translate }}</p>
         <div *ngIf="selectedAuthor && selectedAuthor.totalBooks && selectedAuthor.totalBooks > 0" class="alert alert-warning">
           <i class="bi bi-exclamation-triangle me-2"></i>
-          No se puede eliminar este autor porque tiene {{ selectedAuthor.totalBooks }} libros asociados.
+          {{ 'AUTHORS.CANNOT_DELETE_WITH_BOOKS' | translate:{count: selectedAuthor.totalBooks} }}
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'COMMON.CANCEL' | translate }}</button>
         <button 
           type="button" 
           class="btn btn-danger" 
@@ -328,7 +328,7 @@
           [disabled]="(selectedAuthor && selectedAuthor.totalBooks && selectedAuthor.totalBooks > 0) || isSubmitting"
         >
           <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Eliminar
+          {{ 'COMMON.DELETE' | translate }}
         </button>
       </div>
     </div>

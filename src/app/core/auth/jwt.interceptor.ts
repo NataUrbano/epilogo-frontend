@@ -3,9 +3,7 @@
   import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError } from 'rxjs';
   import { AuthService } from './auth.service';
 
-  // Flag to track if token refresh is in progress
   let isRefreshing = false;
-  // Subject to notify all requests when token refresh is completed
   const tokenRefreshSubject = new BehaviorSubject<string | null>(null);
 
   export const jwtInterceptor: HttpInterceptorFn = (
@@ -13,11 +11,8 @@
     next: HttpHandlerFn
   ) => {
     const authService = inject(AuthService);
-    
-    // Clone request with auth header if token exists
     const authRequest = addAuthHeader(request, authService);
     
-    // Process the request with error handling for 401 responses
     return next(authRequest).pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
@@ -29,11 +24,9 @@
     );
   };
 
-  // Add authorization header to request
   function addAuthHeader(request: HttpRequest<unknown>, authService: AuthService): HttpRequest<unknown> {
     const token = authService.getAccessToken();
     
-    // Skip token addition for auth endpoints to avoid complications with login/register/refresh
     if (request.url.includes('/auth/login') || 
         request.url.includes('/auth/register') || 
         request.url.includes('/auth/refresh')) {
@@ -51,20 +44,17 @@
     return request;
   }
 
-  // Handle 401 Unauthorized error by refreshing token
   function handleUnauthorizedError(
     error: HttpErrorResponse,
     request: HttpRequest<unknown>,
     next: HttpHandlerFn,
     authService: AuthService
   ): Observable<any> {
-    // Skip token refresh for the refresh token endpoint itself
     if (request.url.includes('/auth/refresh')) {
       authService.logout();
       return throwError(() => error);
     }
     
-    // If not already refreshing, start the token refresh process
     if (!isRefreshing) {
       isRefreshing = true;
       tokenRefreshSubject.next(null);
@@ -74,7 +64,6 @@
           isRefreshing = false;
           tokenRefreshSubject.next(tokens.accessToken);
           
-          // Retry the original request with the new token
           return next(addTokenToRequest(request, tokens.accessToken));
         }),
         catchError(refreshError => {
@@ -84,7 +73,6 @@
         })
       );
     } else {
-      // If refresh is in progress, wait for new token then retry request
       return tokenRefreshSubject.pipe(
         filter(token => token !== null),
         take(1),
@@ -93,7 +81,6 @@
     }
   }
 
-  // Add token to request
   function addTokenToRequest(request: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
     return request.clone({
       setHeaders: {

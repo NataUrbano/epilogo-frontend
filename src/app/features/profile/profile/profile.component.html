@@ -9,7 +9,7 @@
           <div class="position-relative mx-auto mb-3" style="width: 120px; height: 120px;">
             <div class="rounded-circle overflow-hidden w-100 h-100 bg-light">
               <div *ngIf="user?.imageUrl; else userInitials">
-                <img [src]="user?.imageUrl" alt="Foto de perfil" class="w-100 h-100 object-fit-cover" />
+                <img [src]="user?.imageUrl" alt="{{ 'PROFILE.PROFILE_PHOTO' | translate }}" class="w-100 h-100 object-fit-cover" />
               </div>
               <ng-template #userInitials>
                 <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary">
@@ -33,24 +33,24 @@
           <h5 class="fw-bold mb-1">{{ user?.userName }}</h5>
           <p class="text-muted small mb-3">{{ user?.email }}</p>
           
-          <!-- Estadísticas básicas del usuario (opcional) -->
+          <!-- Estadísticas básicas del usuario -->
           <div class="row g-0 mb-3 text-center border-top border-bottom py-2">
             <div class="col-4 border-end">
               <div class="py-2">
-                <div class="fw-bold">0</div>
-                <div class="small text-muted">Puntos</div>
+                <div class="fw-bold">{{ userStats.points || 0 }}</div>
+                <div class="small text-muted">{{ 'PROFILE.POINTS' | translate }}</div>
               </div>
             </div>
             <div class="col-4 border-end">
               <div class="py-2">
-                <div class="fw-bold">0</div>
-                <div class="small text-muted">Mensajes</div>
+                <div class="fw-bold">{{ userStats.activeReservations || 0 }}</div>
+                <div class="small text-muted">{{ 'PROFILE.ACTIVE_BOOKS' | translate }}</div>
               </div>
             </div>
             <div class="col-4">
               <div class="py-2">
-                <div class="fw-bold">0</div>
-                <div class="small text-muted">Items</div>
+                <div class="fw-bold">{{ userStats.completedReservations || 0 }}</div>
+                <div class="small text-muted">{{ 'PROFILE.COMPLETED' | translate }}</div>
               </div>
             </div>
           </div>
@@ -59,12 +59,20 @@
         <!-- Menú de navegación de perfil -->
         <div class="list-group list-group-flush">
           <a 
+            href="#profile-reservations"
+            class="list-group-item list-group-item-action"
+            [class.active]="activeTab === 'reservations'"
+            (click)="setActiveTab('reservations', $event)"
+          >
+            <i class="bi bi-book me-3"></i> {{ 'PROFILE.MY_RESERVATIONS' | translate }}
+          </a>
+          <a 
             href="#profile-info"
             class="list-group-item list-group-item-action"
             [class.active]="activeTab === 'info'"
             (click)="setActiveTab('info', $event)"
           >
-            <i class="bi bi-person me-3"></i> Información Personal
+            <i class="bi bi-person me-3"></i> {{ 'PROFILE.PERSONAL_INFO' | translate }}
           </a>
           <a 
             href="#profile-security"
@@ -72,7 +80,7 @@
             [class.active]="activeTab === 'security'"
             (click)="setActiveTab('security', $event)"
           >
-            <i class="bi bi-shield-lock me-3"></i> Seguridad
+            <i class="bi bi-shield-lock me-3"></i> {{ 'PROFILE.SECURITY' | translate }}
           </a>
           <a 
             href="#profile-preferences"
@@ -80,7 +88,7 @@
             [class.active]="activeTab === 'preferences'"
             (click)="setActiveTab('preferences', $event)"
           >
-            <i class="bi bi-gear me-3"></i> Preferencias
+            <i class="bi bi-gear me-3"></i> {{ 'PROFILE.PREFERENCES' | translate }}
           </a>
         </div>
       </div>
@@ -99,6 +107,15 @@
         <div>{{ errorMessage }}</div>
       </div>
       
+      <!-- Panel de mis reservaciones -->
+      <div 
+        id="profile-reservations"
+        class="mb-4"
+        [ngClass]="{'d-none': activeTab !== 'reservations'}"
+      >
+        <app-user-reservations (statsUpdate)="updateReservationStats($event)"></app-user-reservations>
+      </div>
+      
       <!-- Panel de información personal -->
       <div 
         id="profile-info"
@@ -106,12 +123,12 @@
         [ngClass]="{'d-none': activeTab !== 'info'}"
       >
         <div class="card-header bg-white py-3">
-          <h5 class="card-title mb-0">Información Personal</h5>
+          <h5 class="card-title mb-0">{{ 'PROFILE.PERSONAL_INFO' | translate }}</h5>
         </div>
         <div class="card-body p-4">
           <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
             <div class="mb-3">
-              <label for="userName" class="form-label">Nombre de usuario</label>
+              <label for="userName" class="form-label">{{ 'PROFILE.USER_NAME' | translate }}</label>
               <input
                 type="text"
                 id="userName"
@@ -120,12 +137,12 @@
                 [ngClass]="{'is-invalid': profileForm.get('userName')?.invalid && (profileForm.get('userName')?.dirty || profileForm.get('userName')?.touched)}"
               />
               <div *ngIf="profileForm.get('userName')?.invalid && (profileForm.get('userName')?.dirty || profileForm.get('userName')?.touched)" class="invalid-feedback">
-                Nombre de usuario es requerido (mínimo 3 caracteres)
+                {{ 'PROFILE.USERNAME_REQUIRED' | translate }}
               </div>
             </div>
             
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
+              <label for="email" class="form-label">{{ 'PROFILE.EMAIL' | translate }}</label>
               <input
                 type="email"
                 id="email"
@@ -133,18 +150,18 @@
                 readonly
                 class="form-control bg-light"
               />
-              <div class="form-text">El email no puede ser cambiado</div>
+              <div class="form-text">{{ 'PROFILE.EMAIL_CANNOT_CHANGE' | translate }}</div>
             </div>
             
             <!-- Campos adicionales que puedas necesitar -->
             <div class="mb-3">
-              <label for="bio" class="form-label">Biografía</label>
+              <label for="bio" class="form-label">{{ 'PROFILE.BIO' | translate }}</label>
               <textarea
                 id="bio"
                 formControlName="bio"
                 class="form-control"
                 rows="3"
-                placeholder="Cuéntanos sobre ti..."
+                placeholder="{{ 'PROFILE.BIO_PLACEHOLDER' | translate }}"
               ></textarea>
             </div>
             
@@ -155,7 +172,7 @@
                 class="btn btn-primary"
               >
                 <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                {{ isSaving ? 'Guardando...' : 'Guardar cambios' }}
+                {{ isSaving ? ('PROFILE.SAVING' | translate) : ('PROFILE.SAVE_CHANGES' | translate) }}
               </button>
             </div>
           </form>
@@ -169,12 +186,12 @@
         [ngClass]="{'d-none': activeTab !== 'security'}"
       >
         <div class="card-header bg-white py-3">
-          <h5 class="card-title mb-0">Cambiar contraseña</h5>
+          <h5 class="card-title mb-0">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h5>
         </div>
         <div class="card-body p-4">
           <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
             <div class="mb-3">
-              <label for="currentPassword" class="form-label">Contraseña actual</label>
+              <label for="currentPassword" class="form-label">{{ 'PROFILE.CURRENT_PASSWORD' | translate }}</label>
               <input
                 type="password"
                 id="currentPassword"
@@ -183,12 +200,12 @@
                 [ngClass]="{'is-invalid': passwordForm.get('currentPassword')?.invalid && (passwordForm.get('currentPassword')?.dirty || passwordForm.get('currentPassword')?.touched)}"
               />
               <div *ngIf="passwordForm.get('currentPassword')?.invalid && (passwordForm.get('currentPassword')?.dirty || passwordForm.get('currentPassword')?.touched)" class="invalid-feedback">
-                Contraseña actual es requerida
+                {{ 'PROFILE.CURRENT_PASSWORD_REQUIRED' | translate }}
               </div>
             </div>
             
             <div class="mb-3">
-              <label for="newPassword" class="form-label">Nueva contraseña</label>
+              <label for="newPassword" class="form-label">{{ 'PROFILE.NEW_PASSWORD' | translate }}</label>
               <input
                 type="password"
                 id="newPassword"
@@ -197,12 +214,12 @@
                 [ngClass]="{'is-invalid': passwordForm.get('newPassword')?.invalid && (passwordForm.get('newPassword')?.dirty || passwordForm.get('newPassword')?.touched)}"
               />
               <div *ngIf="passwordForm.get('newPassword')?.invalid && (passwordForm.get('newPassword')?.dirty || passwordForm.get('newPassword')?.touched)" class="invalid-feedback">
-                La nueva contraseña debe tener al menos 6 caracteres
+                {{ 'PROFILE.NEW_PASSWORD_LENGTH' | translate }}
               </div>
             </div>
             
             <div class="mb-3">
-              <label for="confirmNewPassword" class="form-label">Confirmar nueva contraseña</label>
+              <label for="confirmNewPassword" class="form-label">{{ 'PROFILE.CONFIRM_PASSWORD' | translate }}</label>
               <input
                 type="password"
                 id="confirmNewPassword"
@@ -211,7 +228,7 @@
                 [ngClass]="{'is-invalid': passwordForm.errors?.['passwordMismatch'] && passwordForm.get('confirmNewPassword')?.touched}"
               />
               <div *ngIf="passwordForm.errors?.['passwordMismatch'] && passwordForm.get('confirmNewPassword')?.touched" class="invalid-feedback">
-                Las contraseñas no coinciden
+                {{ 'PROFILE.PASSWORDS_DONT_MATCH' | translate }}
               </div>
             </div>
             
@@ -222,7 +239,7 @@
                 class="btn btn-primary"
               >
                 <span *ngIf="isChangingPassword" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                {{ isChangingPassword ? 'Actualizando...' : 'Actualizar contraseña' }}
+                {{ isChangingPassword ? ('PROFILE.UPDATING' | translate) : ('PROFILE.UPDATE_PASSWORD' | translate) }}
               </button>
             </div>
           </form>
@@ -236,40 +253,43 @@
         [ngClass]="{'d-none': activeTab !== 'preferences'}"
       >
         <div class="card-header bg-white py-3">
-          <h5 class="card-title mb-0">Preferencias</h5>
+          <h5 class="card-title mb-0">{{ 'PROFILE.PREFERENCES' | translate }}</h5>
         </div>
         <div class="card-body p-4">
           <div class="mb-3 form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="emailNotifications">
-            <label class="form-check-label" for="emailNotifications">Recibir notificaciones por email</label>
+            <input class="form-check-input" type="checkbox" id="emailNotifications" [(ngModel)]="preferences.emailNotifications">
+            <label class="form-check-label" for="emailNotifications">{{ 'PROFILE.EMAIL_NOTIFICATIONS' | translate }}</label>
           </div>
           
           <div class="mb-3 form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="darkMode">
-            <label class="form-check-label" for="darkMode">Modo oscuro</label>
+            <input class="form-check-input" type="checkbox" id="overdueAlerts" [(ngModel)]="preferences.overdueAlerts">
+            <label class="form-check-label" for="overdueAlerts">{{ 'PROFILE.OVERDUE_ALERTS' | translate }}</label>
+          </div>
+          
+          <div class="mb-3 form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="darkMode" [(ngModel)]="preferences.darkMode">
+            <label class="form-check-label" for="darkMode">{{ 'PROFILE.DARK_MODE' | translate }}</label>
           </div>
           
           <div class="mb-3">
-            <label for="language" class="form-label">Idioma</label>
-            <select class="form-select" id="language">
-              <option value="es" selected>Español</option>
-              <option value="en">English</option>
-              <option value="fr">Français</option>
+            <label for="language" class="form-label">{{ 'PROFILE.LANGUAGE' | translate }}</label>
+            <select 
+              class="form-select" 
+              id="language" 
+              [(ngModel)]="selectedLanguage" 
+              name="language"
+              (change)="changeLanguage()"
+              [ngModelOptions]="{standalone: true}"
+            >
+              <option value="es">{{ 'LANGUAGES.SPANISH' | translate }}</option>
+              <option value="en">{{ 'LANGUAGES.ENGLISH' | translate }}</option>
+              <option value="fr">{{ 'LANGUAGES.FRENCH' | translate }}</option>
             </select>
           </div>
           
           <div class="text-end">
-            <button type="button" class="btn btn-primary">Guardar preferencias</button>
+            <button type="button" class="btn btn-primary" (click)="savePreferences()">{{ 'PROFILE.SAVE_PREFERENCES' | translate }}</button>
           </div>
-        </div>
-      </div>
-      
-      <!-- Espacio reservado para contenido futuro -->
-      <div class="card shadow-sm border-0" [ngClass]="{'d-none': activeTab !== 'placeholder'}">
-        <div class="card-body p-4 text-center">
-          <i class="bi bi-grid-3x3-gap fs-1 text-muted mb-3"></i>
-          <h5>Espacio disponible para contenido adicional</h5>
-          <p class="text-muted">Este espacio está reservado para que puedas agregar más elementos en el futuro.</p>
         </div>
       </div>
     </div>

@@ -1,0 +1,26 @@
+.bi {
+  line-height: 1;
+}
+
+.card {
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.list-group-item {
+  transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+@media (max-width: 767.98px) {
+  .table {
+    min-width: 800px;
+  }
+}

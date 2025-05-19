@@ -13,17 +13,14 @@ export class BookService {
 
   constructor(private http: HttpClient) {}
 
-  // Obtener libro por ID
   getBookById(bookId: number): Observable<Book> {
     return this.http.get<Book>(`${this.apiUrl}/${bookId}`)
       .pipe(catchError(this.handleError));
   }
 
-  // Buscar libros con filtros y paginación
   searchBooks(searchParams: BookSearch): Observable<any> {
     let params = new HttpParams();
     
-    // Agregar parámetros de búsqueda si están presentes
     if (searchParams.query) params = params.set('query', searchParams.query);
     if (searchParams.categoryId) params = params.set('categoryId', searchParams.categoryId.toString());
     if (searchParams.authorId) params = params.set('authorId', searchParams.authorId.toString());
@@ -37,25 +34,21 @@ export class BookService {
       .pipe(catchError(this.handleError));
   }
 
-  // Crear un nuevo libro
   createBook(bookData: BookCreate): Observable<Book> {
     return this.http.post<Book>(this.apiUrl, bookData)
       .pipe(catchError(this.handleError));
   }
 
-  // Actualizar un libro existente
   updateBook(bookId: number, bookData: BookUpdate): Observable<Book> {
     return this.http.put<Book>(`${this.apiUrl}/${bookId}`, bookData)
       .pipe(catchError(this.handleError));
   }
 
-  // Eliminar un libro
   deleteBook(bookId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${bookId}`)
       .pipe(catchError(this.handleError));
   }
 
-  // Subir imagen de portada
   uploadBookCover(bookId: number, file: File): Observable<Book> {
     const formData = new FormData();
     formData.append('file', file);
@@ -64,24 +57,19 @@ export class BookService {
       .pipe(catchError(this.handleError));
   }
 
-  // Obtener libros más populares
   getMostPopularBooks(limit: number = 10): Observable<BookSummary[]> {
     return this.http.get<BookSummary[]>(`${this.apiUrl}/popular?limit=${limit}`)
       .pipe(catchError(this.handleError));
   }
 
-  // Manejar errores HTTP
   private handleError(error: any): Observable<never> {
     let errorMessage = 'Ha ocurrido un error desconocido';
     
     if (error.error instanceof ErrorEvent) {
-      // Error del lado del cliente
       errorMessage = `Error: ${error.error.message}`;
     } else if (error.error) {
-      // Error devuelto por el servidor
       errorMessage = error.error.message || 'Error en la operación';
     } else if (error.status) {
-      // Errores HTTP sin cuerpo de respuesta
       switch (error.status) {
         case 401:
           errorMessage = 'No autorizado para realizar esta acción.';

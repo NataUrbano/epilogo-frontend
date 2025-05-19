@@ -13,7 +13,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
       <input 
         type="text" 
         class="search-input" 
-        [placeholder]="placeholder || ('search.placeholder' | translate)" 
+        [placeholder]="placeholder || ('SEARCH.PLACEHOLDER' | translate)" 
         [(ngModel)]="searchTerm"
         (keyup.enter)="onSearch()"
       >

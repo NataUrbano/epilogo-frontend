@@ -1,1 +1,385 @@
-<p>dashboard-home works!</p>
+<div class="container-fluid px-0">
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h1 class="h3 fw-bold mb-1">{{ 'DASHBOARD.WELCOME' | translate }}, {{ currentUserName }}</h1>
+              <p class="text-muted mb-0">{{ 'DASHBOARD.SUMMARY' | translate }}</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+              <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+                {{ today | date:'EEEE, d MMMM yyyy' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3" *ngIf="hasAdminRole">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="text-muted small text-uppercase fw-medium mb-1">{{ 'DASHBOARD.USERS' | translate }}</p>
+              <h3 class="card-title h2 fw-bold mb-0">{{ userCount }}</h3>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-3 rounded-3">
+              <i class="bi bi-people text-primary fs-4"></i>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mt-2">
+            <i *ngIf="userTrend > 0" class="bi bi-arrow-up-short text-success me-1"></i>
+            <i *ngIf="userTrend < 0" class="bi bi-arrow-down-short text-danger me-1"></i>
+            <span *ngIf="userTrend !== 0" [ngClass]="userTrend > 0 ? 'text-success' : 'text-danger'" class="small fw-medium">
+              {{ userTrend > 0 ? '+' : '' }}{{ userTrend }}% {{ 'DASHBOARD.THIS_MONTH' | translate }}
+            </span>
+            <span *ngIf="userTrend === 0" class="text-muted small">{{ 'DASHBOARD.NO_CHANGES_THIS_MONTH' | translate }}</span>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top py-3">
+          <a routerLink="/dashboard/users" class="d-flex justify-content-between align-items-center text-decoration-none text-primary">
+            <span class="small fw-medium">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-sm-6 col-lg-3" *ngIf="hasAdminRole || hasLibrarianRole">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="text-muted small text-uppercase fw-medium mb-1">{{ 'DASHBOARD.RESERVATIONS' | translate }}</p>
+              <h3 class="card-title h2 fw-bold mb-0">{{ reservationCount }}</h3>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-3 rounded-3">
+              <i class="bi bi-bookmark text-primary fs-4"></i>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mt-2">
+            <span class="badge bg-danger me-2">{{ overdueReservationsCount }}</span>
+            <span class="text-danger small fw-medium">{{ 'DASHBOARD.OVERDUE' | translate }}</span>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top py-3">
+          <a routerLink="/dashboard/reservations" class="d-flex justify-content-between align-items-center text-decoration-none text-primary">
+            <span class="small fw-medium">{{ 'DASHBOARD.VIEW_RESERVATIONS' | translate }}</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="text-muted small text-uppercase fw-medium mb-1">{{ 'DASHBOARD.CATEGORIES' | translate }}</p>
+              <h3 class="card-title h2 fw-bold mb-0">{{ categoryCount }}</h3>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-3 rounded-3">
+              <i class="bi bi-folder text-primary fs-4"></i>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mt-2">
+            <i *ngIf="categoryTrend > 0" class="bi bi-arrow-up-short text-success me-1"></i>
+            <i *ngIf="categoryTrend < 0" class="bi bi-arrow-down-short text-danger me-1"></i>
+            <span *ngIf="categoryTrend !== 0" [ngClass]="categoryTrend > 0 ? 'text-success' : 'text-danger'" class="small fw-medium">
+              {{ categoryTrend > 0 ? '+' : '' }}{{ categoryTrend }}% {{ 'DASHBOARD.THIS_MONTH' | translate }}
+            </span>
+            <span *ngIf="categoryTrend === 0" class="text-muted small">{{ 'DASHBOARD.NO_CHANGES_THIS_MONTH' | translate }}</span>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top py-3">
+          <a routerLink="/dashboard/categories" class="d-flex justify-content-between align-items-center text-decoration-none text-primary">
+            <span class="small fw-medium">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="text-muted small text-uppercase fw-medium mb-1">{{ 'DASHBOARD.BOOKS' | translate }}</p>
+              <h3 class="card-title h2 fw-bold mb-0">{{ bookCount }}</h3>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-3 rounded-3">
+              <i class="bi bi-book text-primary fs-4"></i>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mt-2">
+            <i class="bi bi-arrow-up-short text-success me-1"></i>
+            <span class="text-success small fw-medium">+12% {{ 'DASHBOARD.THIS_MONTH' | translate }}</span>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top py-3">
+          <a routerLink="/dashboard/books" class="d-flex justify-content-between align-items-center text-decoration-none text-primary">
+            <span class="small fw-medium">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="text-muted small text-uppercase fw-medium mb-1">{{ 'DASHBOARD.AUTHORS' | translate }}</p>
+              <h3 class="card-title h2 fw-bold mb-0">{{ authorCount }}</h3>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-3 rounded-3">
+              <i class="bi bi-person-vcard text-primary fs-4"></i>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mt-2">
+            <i class="bi bi-arrow-up-short text-success me-1"></i>
+            <span class="text-success small fw-medium">+5% {{ 'DASHBOARD.THIS_MONTH' | translate }}</span>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top py-3">
+          <a routerLink="/dashboard/authors" class="d-flex justify-content-between align-items-center text-decoration-none text-primary">
+            <span class="small fw-medium">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mb-4" *ngIf="hasAdminRole || hasLibrarianRole">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-semibold">{{ 'DASHBOARD.RECENT_RESERVATIONS' | translate }}</h5>
+          <a routerLink="/dashboard/reservations" class="btn btn-sm btn-outline-primary">
+            {{ 'DASHBOARD.VIEW_ALL' | translate }}
+          </a>
+        </div>
+        <div class="card-body p-0">
+          <div *ngIf="isLoadingReservations" class="d-flex justify-content-center py-4">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+            </div>
+          </div>
+          
+          <div *ngIf="!isLoadingReservations && recentReservations.length === 0" class="py-4 text-center">
+            <p class="text-muted mb-0">{{ 'DASHBOARD.NO_RECENT_RESERVATIONS' | translate }}</p>
+          </div>
+          
+          <div *ngIf="!isLoadingReservations && recentReservations.length > 0" class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="py-2">{{ 'DASHBOARD.BOOK' | translate }}</th>
+                  <th class="py-2">{{ 'DASHBOARD.USER' | translate }}</th>
+                  <th class="py-2">{{ 'DASHBOARD.RESERVATION_DATE' | translate }}</th>
+                  <th class="py-2">{{ 'DASHBOARD.STATUS' | translate }}</th>
+                  <th class="py-2 text-end">{{ 'DASHBOARD.ACTION' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let reservation of recentReservations" 
+                    [ngClass]="{'table-danger': reservation.isOverdue && reservation.status === 'ACTIVE'}">
+                  <td class="py-2">
+                    <div class="d-flex align-items-center">
+                      <img 
+                        [src]="reservation.book.imageUrl || '/assets/images/default-book.jpg'" 
+                        class="me-2 rounded"
+                        width="30"
+                        height="45"
+                        style="object-fit: cover;"
+                        [attr.alt]="'BOOKS.COVER' | translate"
+                      >
+                      <span class="small">{{ reservation.book.title }}</span>
+                    </div>
+                  </td>
+                  <td class="py-2">
+                    <div class="d-flex align-items-center">
+                      <img 
+                        [src]="reservation.user.imageUrl || '/assets/images/default-avatar.png'" 
+                        class="rounded-circle me-2"
+                        width="24"
+                        height="24"
+                        style="object-fit: cover;"
+                        [attr.alt]="'COMMON.AVATAR' | translate"
+                      >
+                      <span class="small">{{ reservation.user.userName }}</span>
+                    </div>
+                  </td>
+                  <td class="py-2 small">{{ reservation.reservationDate | date:'dd/MM/yyyy' }}</td>
+                  <td class="py-2">
+                    <span class="badge" [ngClass]="{
+                      'bg-warning text-dark': reservation.status === 'PENDING',
+                      'bg-primary': reservation.status === 'ACTIVE',
+                      'bg-success': reservation.status === 'COMPLETED',
+                      'bg-secondary': reservation.status === 'CANCELLED'
+                    }">
+                      {{ getStatusText(reservation.status) }}
+                    </span>
+                  </td>
+                  <td class="py-2 text-end">
+                    <a routerLink="/dashboard/reservations" class="btn btn-sm btn-outline-secondary">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row g-4 mb-4">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white py-3 border-0">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-semibold">{{ 'DASHBOARD.RECENT_ACTIVITY' | translate }}</h5>
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-primary">{{ 'DASHBOARD.MONTHLY' | translate }}</button>
+              <button type="button" class="btn btn-light">{{ 'DASHBOARD.WEEKLY' | translate }}</button>
+              <button type="button" class="btn btn-light">{{ 'DASHBOARD.DAILY' | translate }}</button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100" style="min-height: 300px;">
+            <i class="bi bi-bar-chart-line text-light fs-1 mb-3" style="font-size: 3rem;"></i>
+            <h5 class="text-muted">{{ 'DASHBOARD.CHARTS_COMING_SOON' | translate }}</h5>
+            <p class="text-muted small">{{ 'DASHBOARD.STATS_COMING_SOON' | translate }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white py-3 border-0">
+          <h5 class="mb-0 fw-semibold">{{ 'DASHBOARD.RECENT_ACTIVITIES' | translate }}</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <div class="list-group-item border-0 border-start border-4 border-primary ps-3 py-3">
+              <p class="mb-1 small">{{ 'DASHBOARD.ACTIVITY_NEW_CATEGORY' | translate }} <span class="fw-medium">{{ 'DASHBOARD.CHILDRENS_LIT' | translate }}</span></p>
+              <small class="text-muted">{{ 'DASHBOARD.HOURS_AGO' | translate:{hours: 2} }}</small>
+            </div>
+            <div class="list-group-item border-0 border-start border-4 border-success ps-3 py-3">
+              <p class="mb-1 small">{{ 'DASHBOARD.ACTIVITY_NEW_BOOK' | translate }} <span class="fw-medium">{{ 'DASHBOARD.HUNDRED_YEARS' | translate }}</span></p>
+              <small class="text-muted">{{ 'DASHBOARD.HOURS_AGO' | translate:{hours: 5} }}</small>
+            </div>
+            <div class="list-group-item border-0 border-start border-4 border-warning ps-3 py-3">
+              <p class="mb-1 small">{{ 'DASHBOARD.ACTIVITY_USER_REGISTERED' | translate }} <span class="fw-medium">carlos_martinez</span></p>
+              <small class="text-muted">{{ 'DASHBOARD.DAYS_AGO' | translate:{days: 1} }}</small>
+            </div>
+            <div class="list-group-item border-0 border-start border-4 border-info ps-3 py-3">
+              <p class="mb-1 small">{{ 'DASHBOARD.ACTIVITY_CATEGORY_UPDATED' | translate }} <span class="fw-medium">{{ 'DASHBOARD.SCI_FI' | translate }}</span></p>
+              <small class="text-muted">{{ 'DASHBOARD.DAYS_AGO' | translate:{days: 2} }}</small>
+            </div>
+            <div class="list-group-item border-0 border-start border-4 border-danger ps-3 py-3">
+              <p class="mb-1 small">{{ 'DASHBOARD.ACTIVITY_NEW_AUTHOR' | translate }} <span class="fw-medium">Isabel Allende</span></p>
+              <small class="text-muted">{{ 'DASHBOARD.DAYS_AGO' | translate:{days: 3} }}</small>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top text-center py-3">
+          <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium">
+            {{ 'DASHBOARD.VIEW_ALL_ACTIVITIES' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-semibold">{{ 'DASHBOARD.PENDING_TASKS' | translate }}</h5>
+          <span class="badge bg-primary rounded-pill">{{ pendingTasks }}</span>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <div class="form-check bg-light rounded p-3 mb-2">
+              <input class="form-check-input" type="checkbox" id="task1">
+              <label class="form-check-label small" for="task1">
+                {{ 'DASHBOARD.TASK_UPDATE_CATEGORIES' | translate }}
+              </label>
+            </div>
+            <div class="form-check bg-light rounded p-3 mb-2">
+              <input class="form-check-input" type="checkbox" id="task2">
+              <label class="form-check-label small" for="task2">
+                {{ 'DASHBOARD.TASK_REVIEW_USERS' | translate }}
+              </label>
+            </div>
+            <div class="form-check bg-light rounded p-3">
+              <input class="form-check-input" type="checkbox" id="task3">
+              <label class="form-check-label small" for="task3">
+                {{ 'DASHBOARD.TASK_UPLOAD_IMAGES' | translate }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-white border-top text-center py-3">
+          <button class="btn btn-link btn-sm text-decoration-none text-primary fw-medium">
+            {{ 'DASHBOARD.VIEW_ALL_TASKS' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-semibold">{{ 'DASHBOARD.SYSTEM_NOTIFICATIONS' | translate }}</h5>
+          <span class="badge bg-danger rounded-pill">2</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <div class="list-group-item border-0 bg-danger bg-opacity-10 text-danger p-3">
+              <div class="d-flex">
+                <i class="bi bi-exclamation-circle me-2 mt-1"></i>
+                <div>
+                  <p class="small fw-medium mb-1">{{ 'DASHBOARD.SYSTEM_UPDATE_REQUIRED' | translate }}</p>
+                  <p class="small mb-0">{{ 'DASHBOARD.SYSTEM_SECURITY_UPDATES' | translate }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="list-group-item border-0 bg-warning bg-opacity-10 text-warning p-3">
+              <div class="d-flex">
+                <i class="bi bi-exclamation-triangle me-2 mt-1"></i>
+                <div>
+                  <p class="small fw-medium mb-1">{{ 'DASHBOARD.SYSTEM_BACKUP_NOT_CONFIGURED' | translate }}</p>
+                  <p class="small mb-0">{{ 'DASHBOARD.SYSTEM_CONFIGURE_BACKUPS' | translate }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="list-group-item border-0 bg-light p-3">
+              <div class="d-flex">
+                <i class="bi bi-info-circle me-2 mt-1 text-muted"></i>
+                <div>
+                  <p class="small fw-medium mb-1 text-dark">{{ 'DASHBOARD.SYSTEM_MAINTENANCE_SCHEDULED' | translate }}</p>
+                  <p class="small mb-0 text-muted">{{ 'DASHBOARD.SYSTEM_MAINTENANCE_TIME' | translate }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

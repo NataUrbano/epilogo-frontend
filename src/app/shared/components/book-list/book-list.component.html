@@ -27,8 +27,8 @@
       
       <div class="sort-options">
         <select (change)="onSortChange($event)">
-          <option value="title" [selected]="searchParams.sortBy === 'title'">Título</option>
-          <option value="registerDate" [selected]="searchParams.sortBy === 'registerDate'">Más recientes</option>
+          <option value="title" [selected]="searchParams.sortBy === 'title'">{{ 'BOOKS.OPTIONS.TITTLE' | translate }}</option>
+          <option value="registerDate" [selected]="searchParams.sortBy === 'registerDate'">{{ 'BOOKS.OPTIONS.MORERECENT' | translate }}</option>
         </select>
         <button class="sort-direction" (click)="onSortChange($event)">
           <i class="fa" [class.fa-sort-up]="searchParams.sortDirection === 'asc'" 

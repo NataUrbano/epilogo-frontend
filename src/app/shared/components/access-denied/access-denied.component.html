@@ -1,1 +1,81 @@
-<p>access-denied works!</p>
+<div class="unauthorized-container py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-5 mb-lg-0 text-center text-lg-start">
+        <div class="security-badge mb-4">
+          <i class="bi bi-shield-lock"></i>
+        </div>
+        <h1 class="display-3 fw-bold text-danger mb-4">403</h1>
+        <h2 class="fw-light mb-3">{{ 'ACCESS_DENIED.TITLE' | translate }}</h2>
+        <p class="lead text-muted mb-4">
+          {{ 'ACCESS_DENIED.MESSAGE' | translate }}
+        </p>
+        <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center justify-content-lg-start">
+          <a routerLink="/" class="btn btn-primary px-4 py-2">
+            <i class="bi bi-house-door me-2"></i>{{ 'ACCESS_DENIED.BACK_HOME' | translate }}
+          </a>
+          <a routerLink="/auth/login" class="btn btn-outline-secondary px-4 py-2">
+            <i class="bi bi-box-arrow-in-right me-2"></i>{{ 'AUTH.LOGIN' | translate }}
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <div class="position-relative">
+          <svg width="100%" height="350" viewBox="0 0 650 350" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#f8f9fa" />
+            <ellipse cx="325" cy="175" rx="180" ry="150" fill="#feebee" />
+            
+            <g class="security-fortress" transform="translate(325, 180)">
+              <rect x="-120" y="0" width="240" height="60" rx="5" fill="#ffffff" stroke="#dc3545" stroke-width="2" />
+              
+              <g class="tower-left">
+                <rect x="-100" y="-120" width="40" height="120" rx="5" fill="#ffffff" stroke="#dc3545" stroke-width="2" />
+                <rect x="-110" y="-130" width="60" height="10" rx="5" fill="#ffffff" stroke="#dc3545" stroke-width="2" />
+                <rect x="-90" y="-80" width="20" height="30" rx="3" fill="#dee2e6" />
+              </g>
+              
+              <g class="tower-center">
+                <rect x="-20" y="-140" width="40" height="140" rx="5" fill="#ffffff" stroke="#dc3545" stroke-width="2" />
+                <rect x="-30" y="-150" width="60" height="10" rx="5" fill="#ffffff" stroke="#dc3545" stroke-width="2" />
+                <rect x="-10" y="-90" width="20" height="30" rx="3" fill="#dee2e6" />
+              </g>
+              
+              <g class="tower-right">
+                <rect x="60" y="-120" width="40" height="120" rx="5" fill="#ffffff" stroke="#dc3545" stroke-width="2" />
+                <rect x="50" y="-130" width="60" height="10" rx="5" fill="#ffffff" stroke="#dc3545" stroke-width="2" />
+                <rect x="70" y="-80" width="20" height="30" rx="3" fill="#dee2e6" />
+              </g>
+              
+              <g class="secure-door">
+                <rect x="-25" y="-40" width="50" height="70" rx="5" fill="#dc3545" />
+                <circle cx="15" cy="-5" r="5" fill="#ffc107" />
+                <rect x="-15" y="-25" width="30" height="10" rx="2" fill="#6c757d" />
+              </g>
+              
+              <g class="floating-lock" transform="translate(0, -190)">
+                <rect x="-15" y="0" width="30" height="25" rx="5" fill="#dc3545" />
+                <rect x="-25" y="-15" width="50" height="15" rx="5" fill="#dc3545" />
+                <circle cx="0" cy="12" r="6" fill="#6c757d" />
+                <rect x="-1" y="9" width="2" height="6" fill="#ffffff" />
+              </g>
+            </g>
+            
+            <g class="floating-text">
+              <text x="325" y="300" font-family="Arial" font-size="24" font-weight="bold" fill="#6c757d" text-anchor="middle">{{ 'ACCESS_DENIED.SUBTITLE' | translate }}</text>
+            </g>
+            
+            <g class="security-elements">
+              <circle cx="180" cy="100" r="10" fill="#e0e0e0" stroke="#dc3545" stroke-width="1" />
+              <circle cx="180" cy="100" r="3" fill="#dc3545" />
+              
+              <circle cx="480" cy="80" r="10" fill="#e0e0e0" stroke="#dc3545" stroke-width="1" />
+              <circle cx="480" cy="80" r="3" fill="#dc3545" />
+              
+              <path d="M180,100 L480,80" stroke="#dc3545" stroke-width="1" stroke-dasharray="5,5" />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

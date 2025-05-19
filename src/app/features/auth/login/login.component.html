@@ -4,26 +4,25 @@
       <div class="card shadow border-0 rounded-lg">
         <div class="card-body p-4 p-lg-5">
           <div class="text-center mb-4">
-            <h1 class="h3 fw-bold">Iniciar sesión</h1>
+            <h1 class="h3 fw-bold">{{ 'AUTH.LOGIN' | translate }}</h1>
             <p class="text-muted small">
-              O
+              {{ 'COMMON.OR' | translate }}
               <a [routerLink]="['/auth/register']" class="text-primary text-decoration-none">
-                crea una cuenta nueva
+                {{ 'AUTH.CREATE_NEW_ACCOUNT' | translate }}
               </a>
             </p>
           </div>
           
-          <!-- Alert message -->
           <div *ngIf="errorMessage" class="alert alert-danger d-flex align-items-center" role="alert">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             <div>
-              <strong>Error:</strong> {{ errorMessage }}
+              <strong>{{ 'COMMON.ERROR' | translate }}:</strong> {{ errorMessage | translate }}
             </div>
           </div>
           
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="needs-validation">
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
+              <label for="email" class="form-label">{{ 'AUTH.EMAIL' | translate }}</label>
               <div class="input-group">
                 <span class="input-group-text bg-light">
                   <i class="bi bi-envelope"></i>
@@ -34,18 +33,18 @@
                   formControlName="email"
                   class="form-control"
                   [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)}"
-                  placeholder="tu@email.com"
+                  placeholder="{{ 'AUTH.EMAIL_PLACEHOLDER' | translate }}"
                 />
                 <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)" class="invalid-feedback">
-                  Email inválido
+                  {{ 'AUTH.VALIDATION.INVALID_EMAIL' | translate }}
                 </div>
               </div>
             </div>
             
             <div class="mb-3">
               <div class="d-flex justify-content-between">
-                <label for="password" class="form-label">Contraseña</label>
-                <a href="#" class="text-primary text-decoration-none small">¿Olvidaste tu contraseña?</a>
+                <label for="password" class="form-label">{{ 'AUTH.PASSWORD' | translate }}</label>
+                <a href="#" class="text-primary text-decoration-none small">{{ 'AUTH.FORGOT_PASSWORD' | translate }}</a>
               </div>
               <div class="input-group">
                 <span class="input-group-text bg-light">
@@ -57,10 +56,10 @@
                   formControlName="password"
                   class="form-control"
                   [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)}"
-                  placeholder="Tu contraseña"
+                  placeholder="{{ 'AUTH.PASSWORD_PLACEHOLDER' | translate }}"
                 />
                 <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)" class="invalid-feedback">
-                  Contraseña es requerida
+                  {{ 'AUTH.VALIDATION.PASSWORD_REQUIRED' | translate }}
                 </div>
               </div>
             </div>
@@ -71,7 +70,7 @@
                 class="form-check-input" 
                 id="remember-me"
               >
-              <label class="form-check-label" for="remember-me">Recordarme</label>
+              <label class="form-check-label" for="remember-me">{{ 'AUTH.REMEMBER_ME' | translate }}</label>
             </div>
             
             <div class="d-grid">
@@ -81,17 +80,16 @@
                 class="btn btn-primary btn-lg"
               >
                 <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                {{ isLoading ? 'Procesando...' : 'Iniciar sesión' }}
+                {{ isLoading ? ('COMMON.PROCESSING' | translate) : ('AUTH.LOGIN' | translate) }}
               </button>
             </div>
           </form>
         </div>
       </div>
       
-      <!-- Social login options (opcional) -->
       <div class="card mt-3 border-0 shadow-sm">
         <div class="card-body py-3 text-center">
-          <p class="mb-2 text-muted small">O inicia sesión con</p>
+          <p class="mb-2 text-muted small">{{ 'AUTH.OR_LOGIN_WITH' | translate }}</p>
           <div class="d-flex justify-content-center gap-2">
             <button class="btn btn-outline-secondary">
               <i class="bi bi-google"></i>

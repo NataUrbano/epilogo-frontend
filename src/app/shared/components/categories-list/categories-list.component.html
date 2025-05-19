@@ -1,1 +1,229 @@
-<p>categories-list works!</p>
+<div class="container-fluid px-0">
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1 class="h3 fw-bold mb-0">{{ 'CATEGORIES.MANAGEMENT_TITLE' | translate }}</h1>
+        </div>
+        <div class="col-lg-6">
+          <div class="d-flex justify-content-lg-end mt-3 mt-lg-0">
+            <div class="position-relative me-2 flex-grow-1" style="max-width: 300px;">
+              <input 
+                type="text" 
+                [(ngModel)]="searchTerm"
+                (input)="filterCategories()"
+                placeholder="{{ 'CATEGORIES.SEARCH_PLACEHOLDER' | translate }}" 
+                class="form-control"
+              >
+              <button 
+                *ngIf="searchTerm" 
+                (click)="clearSearch()"
+                class="btn-close position-absolute top-50 end-0 translate-middle-y me-2 small"
+                type="button"
+                aria-label="Clear"
+              ></button>
+            </div>
+            <button 
+              (click)="showCreateModal = true"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-plus-lg me-1"></i> {{ 'CATEGORIES.NEW_CATEGORY' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="isLoading" class="d-flex justify-content-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
+    </div>
+  </div>
+  
+  <div *ngIf="!isLoading && filteredCategories.length === 0" class="card border-0 shadow-sm">
+    <div class="card-body py-5 text-center">
+      <p class="text-muted mb-0">{{ 'CATEGORIES.NO_RESULTS' | translate }}</p>
+    </div>
+  </div>
+  
+  <div *ngIf="!isLoading && filteredCategories.length > 0" class="row g-4">
+    <div class="col-sm-6 col-lg-4 col-xl-3" *ngFor="let category of filteredCategories">
+      <div class="card border-0 shadow-sm h-100 category-card">
+        <div class="position-relative">
+          <div class="category-image">
+            <img 
+              [src]="category.imageUrl || '/assets/images/default-category.jpg'" 
+              [alt]="category.categoryName"
+              class="card-img-top"
+              style="object-fit: cover; height: 180px;"
+            >
+          </div>
+          <div class="position-absolute bottom-0 start-0 w-100 p-3 bg-gradient-to-top">
+            <h5 class="card-title text-white mb-0">{{ category.categoryName }}</h5>
+          </div>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <div *ngIf="category.description" class="card-text text-muted small mb-3 flex-grow-1">
+            {{ category.description | slice:0:100 }}{{ category.description.length > 100 ? '...' : '' }}
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="badge bg-light text-dark">
+              <i class="bi bi-book me-1"></i> {{ category.totalBooks || 0 }} {{ 'CATEGORIES.BOOKS' | translate }}
+            </span>
+            <div class="btn-group">
+              <button 
+                (click)="editCategory(category)" 
+                class="btn btn-sm btn-outline-primary"
+                title="{{ 'COMMON.EDIT' | translate }}"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button 
+                (click)="deleteCategory(category)" 
+                class="btn btn-sm btn-outline-danger"
+                title="{{ 'COMMON.DELETE' | translate }}"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" [class.show]="showCreateModal" [style.display]="showCreateModal ? 'block' : 'none'" tabindex="-1" [attr.aria-modal]="showCreateModal" [attr.aria-hidden]="!showCreateModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'CATEGORIES.NEW_CATEGORY' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="showCreateModal = false" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="categoryName" class="form-label">{{ 'CATEGORIES.CATEGORY_NAME' | translate }}</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="categoryName" 
+              [(ngModel)]="categoryCreateForm.categoryName"
+              placeholder="{{ 'CATEGORIES.NAME_PLACEHOLDER' | translate }}"
+            >
+          </div>
+          <div class="mb-3">
+            <label for="categoryDescription" class="form-label">{{ 'COMMON.DESCRIPTION' | translate }}</label>
+            <textarea 
+              class="form-control" 
+              id="categoryDescription" 
+              [(ngModel)]="categoryCreateForm.description"
+              rows="3"
+              placeholder="{{ 'CATEGORIES.DESCRIPTION_PLACEHOLDER' | translate }}"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showCreateModal = false">{{ 'COMMON.CANCEL' | translate }}</button>
+          <button type="button" class="btn btn-primary" (click)="createCategory()">{{ 'CATEGORIES.CREATE_BUTTON' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade" *ngIf="showCreateModal" [class.show]="showCreateModal"></div>
+  
+  <div class="modal fade" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'" tabindex="-1" [attr.aria-modal]="showEditModal" [attr.aria-hidden]="!showEditModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'CATEGORIES.EDIT_CATEGORY' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="showEditModal = false" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedCategory">
+          <div class="mb-3">
+            <label for="editCategoryName" class="form-label">{{ 'CATEGORIES.CATEGORY_NAME' | translate }}</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="editCategoryName" 
+              [(ngModel)]="categoryEditForm.categoryName"
+            >
+          </div>
+          <div class="mb-3">
+            <label for="editCategoryDescription" class="form-label">{{ 'COMMON.DESCRIPTION' | translate }}</label>
+            <textarea 
+              class="form-control" 
+              id="editCategoryDescription" 
+              [(ngModel)]="categoryEditForm.description"
+              rows="3"
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ 'CATEGORIES.CURRENT_IMAGE' | translate }}</label>
+            <div class="card">
+              <div style="height: 160px; overflow: hidden">
+                <img 
+                  [src]="selectedCategory.imageUrl || '/assets/images/default-category.jpg'" 
+                  [alt]="selectedCategory.categoryName"
+                  class="img-fluid w-100"
+                  style="object-fit: cover; height: 100%;"
+                >
+              </div>
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="form-text">{{ 'CATEGORIES.SELECT_NEW_IMAGE' | translate }}</div>
+                  <div>
+                    <input 
+                      type="file" 
+                      (change)="onImageSelected($event)"
+                      accept="image/*"
+                      class="d-none"
+                      #imageInput
+                    >
+                    <button 
+                      (click)="imageInput.click()"
+                      class="btn btn-sm btn-outline-primary"
+                    >
+                      <i class="bi bi-upload me-1"></i> {{ 'CATEGORIES.UPLOAD_IMAGE' | translate }}
+                    </button>
+                  </div>
+                </div>
+                <div *ngIf="selectedImage" class="mt-2 small text-success">
+                  {{ 'CATEGORIES.NEW_IMAGE_SELECTED' | translate }}: {{ selectedImage.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showEditModal = false">{{ 'COMMON.CANCEL' | translate }}</button>
+          <button type="button" class="btn btn-primary" (click)="saveCategory()">{{ 'COMMON.SAVE' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade" *ngIf="showEditModal" [class.show]="showEditModal"></div>
+  
+  <div class="modal fade" [class.show]="showDeleteModal" [style.display]="showDeleteModal ? 'block' : 'none'" tabindex="-1" [attr.aria-modal]="showDeleteModal" [attr.aria-hidden]="!showDeleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">{{ 'CATEGORIES.DELETE_CATEGORY' | translate }}</h5>
+          <button type="button" class="btn-close" (click)="showDeleteModal = false" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedCategory">
+          <p>{{ 'CATEGORIES.DELETE_CONFIRMATION' | translate }} <strong>{{ selectedCategory.categoryName }}</strong>?</p>
+          <p *ngIf="selectedCategory.totalBooks && selectedCategory.totalBooks > 0" class="text-warning mb-3">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            {{ 'CATEGORIES.ASSOCIATED_BOOKS_WARNING' | translate: {count: selectedCategory.totalBooks} }}
+          </p>
+          <p class="text-muted small mb-0">{{ 'CATEGORIES.DELETE_WARNING' | translate }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showDeleteModal = false">{{ 'COMMON.CANCEL' | translate }}</button>
+          <button type="button" class="btn btn-danger" (click)="confirmDeleteCategory()">{{ 'COMMON.DELETE' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade" *ngIf="showDeleteModal" [class.show]="showDeleteModal"></div>
+</div>

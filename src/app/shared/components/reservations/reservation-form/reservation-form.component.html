@@ -1,1 +1,27 @@
-<p>reservation-form works!</p>
+<div class="reservation-form-container">
+  <h3 class="form-title">{{ 'RESERVATIONS.FORM.TITLE' | translate }}</h3>
+  
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="returnDate">{{ 'RESERVATIONS.FORM.RETURN_DATE' | translate }}:</label>
+      <input 
+        type="date" 
+        id="returnDate" 
+        [(ngModel)]="formData.expectedReturnDate" 
+        name="returnDate" 
+        [min]="minReturnDate" 
+        required>
+    </div>
+    
+    <button 
+      type="submit" 
+      class="reserve-button" 
+      [disabled]="!formData.expectedReturnDate || loading">
+      {{ loading ? ('RESERVATIONS.FORM.PROCESSING' | translate) : ('RESERVATIONS.FORM.RESERVE_NOW' | translate) }}
+    </button>
+    
+    @if (errorMessage) {
+      <p class="error-message">{{ errorMessage }}</p>
+    }
+  </form>
+</div>

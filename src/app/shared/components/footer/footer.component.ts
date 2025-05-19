@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-footer',
@@ -13,6 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 })
 export class FooterComponent implements OnInit {
   private translateService = inject(TranslateService);
+  private authService = inject(AuthService);
   
   currentYear: number = new Date().getFullYear();
   
@@ -24,10 +26,13 @@ export class FooterComponent implements OnInit {
   subscriptionSuccess: boolean = false;
   
   constructor() { }
-  
   ngOnInit(): void {
-    // Si necesitas inicializar algo específico del footer aquí
+    throw new Error('Method not implemented.');
   }
+
+  get hasAdminRole(): boolean {
+    return this.authService.hasRole('ROLE_ADMIN');
+    }
   
   onSubmit() {
     if (this.email && this.validateEmail(this.email)) {

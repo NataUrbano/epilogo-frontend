@@ -1,0 +1,41 @@
+.not-found-container {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+}
+
+.astronaut {
+  animation: float 6s ease-in-out infinite;
+}
+
+.stars circle {
+  animation: twinkle 4s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+.stars circle:nth-child(odd) {
+  animation-delay: 2s;
+}
+
+.floating-text {
+  animation: float 5s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}

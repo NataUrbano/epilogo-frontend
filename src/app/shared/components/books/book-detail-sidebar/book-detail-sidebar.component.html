@@ -1,1 +1,79 @@
-<p>book-detail-sidebar works!</p>
+@if (isOpen) {
+  <div 
+    class="sidebar-backdrop" 
+    @backdropFade 
+    (click)="close()">
+  </div>
+  
+  <div class="sidebar" @sidebarSlide>
+    <div class="sidebar-header">
+      <button class="close-button" (click)="close()">×</button>
+      <h2 class="sidebar-title">{{ 'BOOKS.DETAILS_TITLE' | translate }}</h2>
+    </div>
+    
+    @if (loading) {
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <p>{{ 'COMMON.LOADING_DETAILS' | translate }}</p>
+      </div>
+    } @else if (error) {
+      <div class="error-message">
+        <p>{{ error }}</p>
+        <button class="retry-button" (click)="retryLoad()">{{ 'COMMON.TRY_AGAIN' | translate }}</button>
+      </div>
+    } @else if (book) {
+      <div class="book-details">
+        <div class="book-cover" 
+             [style.background-image]="book.imageUrl ? 'url(' + book.imageUrl + ')' : 'url(/assets/images/default-book.jpg)'">
+        </div>
+        
+        <h3 class="book-title">{{ book.title }}</h3>
+        
+        <div class="book-info">
+          <p class="author"><strong>{{ 'BOOKS.AUTHOR' | translate }}:</strong> {{ book.author.authorName || 'COMMON.NOT_SPECIFIED' | translate }}</p>
+          
+          @if (book.description) {
+            <p class="description">{{ book.description }}</p>
+          }
+          
+          <p class="status" [class]="book.bookStatus.toLowerCase()">
+            {{ 'BOOKS.STATUS' | translate }}: 
+            @switch (book.bookStatus) {
+              @case ('AVAILABLE') { {{ 'BOOKS.STATUS_AVAILABLE' | translate }} }
+              @case ('LOW_STOCK') { {{ 'BOOKS.STATUS_LOW_STOCK' | translate }} }
+              @case ('UNAVAILABLE') { {{ 'BOOKS.STATUS_UNAVAILABLE' | translate }} }
+            }
+          </p>
+          
+          <p><strong>{{ 'BOOKS.AVAILABLE_COPIES' | translate }}:</strong> {{ book.availableAmount }} {{ 'BOOKS.OF' | translate }} {{ book.totalAmount }}</p>
+          
+          @if (book.publicationYear) {
+            <p><strong>{{ 'BOOKS.PUBLICATION_YEAR' | translate }}:</strong> {{ book.publicationYear }}</p>
+          }
+          
+          @if (book.isbn) {
+            <p><strong>{{ 'BOOKS.ISBN' | translate }}:</strong> {{ book.isbn }}</p>
+          }
+        </div>
+        
+        @if (isAuthenticated && (book.bookStatus === 'AVAILABLE' || book.bookStatus === 'LOW_STOCK')) {
+          <app-reservation-form
+            [bookId]="book.bookId"
+            [loading]="reservationLoading"
+            [errorMessage]="reservationError"
+            (createReservation)="onCreateReservation($event)">
+          </app-reservation-form>
+        } @else if (isAuthenticated && book.bookStatus === 'UNAVAILABLE') {
+          <div class="unavailable-message">
+            <p>{{ 'BOOKS.UNAVAILABLE_MESSAGE' | translate }}</p>
+          </div>
+        } @else if (!isAuthenticated) {
+          <div class="login-message">
+            <p>{{ 'BOOKS.LOGIN_REQUIRED' | translate }}</p>
+            <a routerLink="/auth/login" class="login-button">{{ 'AUTH.LOGIN' | translate }}</a>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}
