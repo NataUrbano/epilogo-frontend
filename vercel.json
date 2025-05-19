@@ -1,6 +1,10 @@
 {
   "rewrites": [
-    { "source": "/((?!browser/).*)", "destination": "/browser/$1" }
+    { "source": "/assets/(.*)", "destination": "/browser/assets/$1" },
+    { "source": "/favicon.ico", "destination": "/browser/favicon.ico" },
+    { "source": "/(.*).js", "destination": "/browser/$1.js" },
+    { "source": "/(.*).css", "destination": "/browser/$1.css" },
+    { "source": "/(.*)", "destination": "/browser/index.html" }
   ],
   "buildCommand": "npm run build",
   "outputDirectory": "dist/epilogo-frontend"
