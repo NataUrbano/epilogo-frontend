@@ -36,7 +36,6 @@ export class RandomCategoriesComponent implements OnInit {
       )
       .subscribe({
         next: (categories) => {
-          // Obtener 5 categorías aleatorias si hay más de 10
           if (categories.length > 10) {
             
             this.categories = this.getRandomCategories(categories, 10);
@@ -45,7 +44,6 @@ export class RandomCategoriesComponent implements OnInit {
             this.categories = categories;
           }
 
-           // Imprimir en consola categoryName e imageUrl de cada categoría
         this.categories.forEach(category => {
           console.log(`CategoryName: ${category.categoryName}, ImageUrl: ${category.imageUrl}`);
         }); 
@@ -57,16 +55,13 @@ export class RandomCategoriesComponent implements OnInit {
   }
 
   getRandomCategories(categories: CategorySummary[], count: number): CategorySummary[] {
-    // Copia el array original para no modificarlo
     const shuffled = [...categories];
     
-    // Algoritmo de Fisher-Yates para barajar el array
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     
-    // Devolver solo la cantidad solicitada
     return shuffled.slice(0, count);
   }
 

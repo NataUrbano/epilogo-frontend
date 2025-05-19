@@ -78,3 +78,28 @@
       height: 220px;
     }
   }
+
+  .book-cover {
+  max-height: 250px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.no-cover {
+  height: 200px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.reservation-info-item {
+  padding: 0.5rem 0;
+}
+
+.card {
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}

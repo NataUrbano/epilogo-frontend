@@ -1,0 +1,86 @@
+.unauthorized-container {
+  min-height: calc(100vh - 200px);
+  display: flex;
+  align-items: center;
+}
+
+.security-badge {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  background-color: #feebee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.security-badge i {
+  font-size: 40px;
+  color: #dc3545;
+}
+
+.floating-lock {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.security-elements {
+  animation: scan 10s linear infinite;
+}
+
+.tower-left,
+.tower-right,
+.tower-center {
+  animation: sway 6s ease-in-out infinite;
+}
+
+.tower-center {
+  animation-delay: 1s;
+}
+
+.tower-right {
+  animation-delay: 2s;
+}
+
+.floating-text {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes scan {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes sway {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

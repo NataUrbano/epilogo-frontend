@@ -66,6 +66,9 @@ export class BookListComponent implements OnInit, OnChanges {
       } else {
         this.selectedCategory = null;
       }
+
+      this.goToLibros();
+      
     }
     
     // Si cambia la búsqueda
@@ -216,5 +219,24 @@ export class BookListComponent implements OnInit, OnChanges {
     }
     
     return pages;
+  }
+
+  goToLibros() {
+    if (this.router.url !== '/') {
+      this.router.navigate(['/']).then(() => {
+        this.waitAndScroll('libros-seccion');
+      });
+    } else {
+      this.waitAndScroll('libros-seccion');
+    }
+  }
+  
+  private waitAndScroll(anchor: string, retries = 10) {
+    const el = document.getElementById(anchor);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    } else if (retries > 0) {
+      setTimeout(() => this.waitAndScroll(anchor, retries - 1), 100);
+    }
   }
 }

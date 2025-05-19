@@ -39,7 +39,11 @@
             <a routerLink="/books" class="footer-link">{{ 'NAVIGATION.BOOKS' | translate }}</a>
           </li>
           <li class="mb-2">
-            <a routerLink="/categories" class="footer-link">{{ 'NAVIGATION.CATEGORIES' | translate }}</a>
+            <a class="nav-link"
+              [routerLink]="hasAdminRole ? '/dashboard' : '/profile'"
+              routerLinkActive="active">
+              {{ hasAdminRole ? ('NAVIGATION.DASHBOARD' | translate) : ('NAVIGATION.MYRESERVATIONS' | translate) }}
+            </a>
           </li>
           <li class="mb-2">
             <a routerLink="/services" class="footer-link">{{ 'NAVIGATION.SERVICES' | translate }}</a>
