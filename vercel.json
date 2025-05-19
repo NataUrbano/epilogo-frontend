@@ -1,6 +1,8 @@
 {
   "rewrites": [
-    { "source": "/((?!browser/).*)", "destination": "/browser/$1" }
+    { "source": "/(.*).js", "destination": "/browser/$1.js" },
+    { "source": "/(.*).css", "destination": "/browser/$1.css" },
+    { "source": "/(.*)", "destination": "/browser/index.html" }
   ],
   "buildCommand": "npm run build",
   "outputDirectory": "dist/epilogo-frontend"
