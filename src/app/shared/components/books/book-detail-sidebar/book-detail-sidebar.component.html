@@ -61,6 +61,7 @@
             [bookId]="book.bookId"
             [loading]="reservationLoading"
             [errorMessage]="reservationError"
+            [reservationSuccess]="reservationSuccess"
             (createReservation)="onCreateReservation($event)">
           </app-reservation-form>
         } @else if (isAuthenticated && book.bookStatus === 'UNAVAILABLE') {

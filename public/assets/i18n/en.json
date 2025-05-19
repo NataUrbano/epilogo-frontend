@@ -156,7 +156,10 @@
     "ACTIVE": "Active",
     "COMPLETED": "Completed",
     "CANCELLED": "Cancelled",
-    "OVERDUE": "Overdue"
+    "OVERDUE": "Overdue",
+    "MODALS": {
+      "DETAILS_TITLE" : "Reservation details"
+    }
   },
   "USER": "User",
   "BOOK": "Book",

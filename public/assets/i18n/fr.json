@@ -158,7 +158,11 @@
     "SUBTITLE": "Gérez toutes les réservations sur la plateforme",
     "SEARCH_PLACEHOLDER": "Rechercher des réservations...",
     "DOWNLOAD_CSV": "Télécharger CSV",
-    "LOAD_ERROR": "Erreur lors du chargement des réservations. Veuillez réessayer."
+    "LOAD_ERROR": "Erreur lors du chargement des réservations. Veuillez réessayer.",
+    
+    "MODALS": {
+      "DETAILS_TITLE" : "Détails de la réservation"
+    }
   },
   "STATUS": {
     "LABEL": "Statut",

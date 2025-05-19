@@ -159,7 +159,7 @@
     "SEARCH_PLACEHOLDER": "Buscar reservaciones...",
     "DOWNLOAD_CSV": "Descargar CSV",
     "LOAD_ERROR": "Error al cargar las reservaciones. Inténtalo de nuevo."
-  },
+    },
     "STATUS": {
       "LABEL": "Estado",
       "ALL": "Todos los estados",
@@ -172,7 +172,10 @@
     "USER": "Usuario",
     "BOOK": "Libro",
     "RETURN_DATE": "Fecha de devolución",
-    "ACTIONS": "Acciones"
+    "ACTIONS": "Acciones",
+    "MODALS": {
+      "DETAILS_TITLE" : "Detalles de la reserva"
+    }
   },
   "BOOKS": {
     "TITLESECTION": "Nuestros libros",

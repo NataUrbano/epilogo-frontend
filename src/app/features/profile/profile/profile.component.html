@@ -9,7 +9,7 @@
           <div class="position-relative mx-auto mb-3" style="width: 120px; height: 120px;">
             <div class="rounded-circle overflow-hidden w-100 h-100 bg-light">
               <div *ngIf="user?.imageUrl; else userInitials">
-                <img [src]="user?.imageUrl" alt="{{ 'PROFILE.PROFILE_PHOTO' | translate }}" class="w-100 h-100 object-fit-cover" />
+                <img [src]="user?.imageUrl || './assets/images/default-avatar.png'" alt="{{ 'PROFILE.PROFILE_PHOTO' | translate }}" class="w-100 h-100 object-fit-cover" />
               </div>
               <ng-template #userInitials>
                 <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary">
