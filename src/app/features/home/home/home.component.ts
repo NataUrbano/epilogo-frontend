@@ -12,6 +12,7 @@ import { WelcomeCarouselComponent } from '../../../shared/components/welcome-car
 import { Book } from '../../../core/models/book.model';
 import { ReservationCreate } from '../../../core/models/reservation.model';
 import { BookDetailSidebarComponent } from '../../../shared/components/books/book-detail-sidebar/book-detail-sidebar.component';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-home',
@@ -171,29 +172,87 @@ export class HomeComponent implements OnInit {
   }
   
   // Crear una reserva
-  createReservation(data: ReservationCreate): void {
-    if (!this.isAuthenticated) {
-      this.reservationError = 'Debes iniciar sesión para hacer una reserva.';
-      return;
-    }
-    
-    this.reservationLoading = true;
-    this.reservationError = '';
-    
-    this.reservationService.createReservation(data).subscribe({
-      next: (reservation) => {
-        // Éxito en la reserva
-        this.reservationLoading = false;
-        alert('¡Reserva creada con éxito!');
-        this.closeSidebar();
-        this.retryLoadBook();
-        // Aquí podrías recargar la lista de libros para reflejar los cambios
-
-      },
-      error: (err) => {
-        this.reservationLoading = false;
-        this.reservationError = err.message || 'Error al crear la reserva. Intente nuevamente.';
-      }
-    });
+  // Crear una reserva
+createReservation(data: ReservationCreate): void {
+  if (!this.isAuthenticated) {
+    this.reservationError = 'Debes iniciar sesión para hacer una reserva.';
+    return;
   }
+  
+  this.reservationLoading = true;
+  this.reservationError = '';
+  
+  this.reservationService.createReservation(data).subscribe({
+    next: (reservation) => {
+      // Éxito en la reserva
+      this.reservationLoading = false;
+      
+      // Mostrar notificación usando Bootstrap toasts
+      this.showNotification('¡Reserva creada con éxito!', 'success');
+      
+      this.closeSidebar();
+      this.retryLoadBook();
+    },
+    error: (err) => {
+      this.reservationLoading = false;
+      this.reservationError = err.message || 'Error al crear la reserva. Intente nuevamente.';
+      
+      // Mostrar notificación de error
+      this.showNotification(this.reservationError, 'error');
+    }
+  });
+}
+
+// Método para mostrar notificaciones
+private showNotification(message: string, type: 'success' | 'error' | 'warning' = 'success'): void {
+  let toastContainer = document.getElementById('toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+    document.body.appendChild(toastContainer);
+  }
+  
+  const toastId = `toast-${Date.now()}`;
+  const toast = document.createElement('div');
+  toast.id = toastId;
+  toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'danger'} border-0`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  toast.setAttribute('aria-atomic', 'true');
+  
+  const toastContent = document.createElement('div');
+  toastContent.className = 'd-flex';
+  
+  const toastBody = document.createElement('div');
+  toastBody.className = 'toast-body';
+  toastBody.textContent = message;
+  
+  const closeButton = document.createElement('button');
+  closeButton.type = 'button';
+  closeButton.className = 'btn-close btn-close-white me-2 m-auto';
+  closeButton.setAttribute('data-bs-dismiss', 'toast');
+  closeButton.setAttribute('aria-label', 'Close');
+  
+  toastContent.appendChild(toastBody);
+  toastContent.appendChild(closeButton);
+  toast.appendChild(toastContent);
+  
+  toastContainer.appendChild(toast);
+  
+  try {
+    const bsToast = new bootstrap.Toast(toast, {
+      autohide: true,
+      delay: 5000
+    });
+    bsToast.show();
+    
+    toast.addEventListener('hidden.bs.toast', () => {
+      toast.remove();
+    });
+  } catch (error) {
+    console.error('Error showing toast notification:', error);
+    console.log(`${type.toUpperCase()}: ${message}`);
+  }
+}
 }

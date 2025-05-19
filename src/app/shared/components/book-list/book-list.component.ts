@@ -67,7 +67,7 @@ export class BookListComponent implements OnInit, OnChanges {
         this.selectedCategory = null;
       }
 
-      this.goToLibros();
+      
       
     }
     
@@ -86,26 +86,30 @@ export class BookListComponent implements OnInit, OnChanges {
   }
 
   loadBooks(): void {
-    this.loading = true;
-    this.error = false;
-    
-    this.bookService.searchBooks(this.searchParams)
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          this.books = response.content;
-          this.totalBooks = response.totalElements;
-          this.totalPages = response.totalPages;
-        },
-        error: () => {
-          this.error = true;
+  this.loading = true;
+  this.error = false;
+
+  this.bookService.searchBooks(this.searchParams)
+    .pipe(
+      finalize(() => {
+        this.loading = false;
+        // Si hay una categoría seleccionada, desplazarse a la sección de libros
+        if (this.selectedCategoryId) {
+          this.goToLibros();
         }
-      });
-  }
+      })
+    )
+    .subscribe({
+      next: (response) => {
+        this.books = response.content;
+        this.totalBooks = response.totalElements;
+        this.totalPages = response.totalPages;
+      },
+      error: () => {
+        this.error = true;
+      }
+    });
+}
   
   loadCategoryInfo(categoryId: number): void {
     this.categoryService.getCategoryById(categoryId)
