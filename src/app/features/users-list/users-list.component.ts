@@ -32,7 +32,8 @@ export class UsersListComponent implements OnInit {
     userName: '',
     email: '',
     roles: [],
-    isActive: true
+    isActive: true,
+    password: ''
   };
   
   ngOnInit(): void {
@@ -155,6 +156,18 @@ export class UsersListComponent implements OnInit {
         }
       });
     }
+    if (this.userEditForm.password && this.userEditForm.password.trim().length > 0) {
+    this.userService.updateUser(this.selectedUser.userId, {
+      newPassword: this.userEditForm.password
+    }).subscribe({
+      next: (updatedUser) => {
+        this.updateUserInList(updatedUser);
+      },
+      error: (error: any) => {
+        console.error('Error updating user password:', error);
+      }
+    });
+  }
     
     this.showEditModal = false;
     this.selectedUser = null;

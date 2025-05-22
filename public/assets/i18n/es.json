@@ -158,7 +158,8 @@
     "SUBTITLE": "Administra todas las reservaciones en la plataforma",
     "SEARCH_PLACEHOLDER": "Buscar reservaciones...",
     "DOWNLOAD_CSV": "Descargar CSV",
-    "LOAD_ERROR": "Error al cargar las reservaciones. Inténtalo de nuevo."
+    "LOAD_ERROR": "Error al cargar las reservaciones. Inténtalo de nuevo.",
+    "NO_RESERVATIONS" : "Aqui veras las reservaciones de los usuarios cuando haya una"
     },
     "STATUS": {
       "LABEL": "Estado",

@@ -14,7 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  private authService = inject(AuthService);
+  private authService = inject(AuthService); 
   private elementRef = inject(ElementRef);
   private translateService = inject(TranslateService);
   
@@ -190,10 +190,11 @@ export class HeaderComponent implements OnInit {
   }
   
   // Método para manejar la búsqueda
-  onSearch(query: string): void {
-    console.log('Búsqueda realizada:', query);
-    this.searchQuery = query;
-    // Al hacer una búsqueda, limpiamos el filtro de categoría
-    this.selectedCategoryId = null;
+  onSearch(searchQuery: string): void {
+    // Navegar al home con el parámetro de búsqueda
+    this.router.navigate(['/'], { 
+      queryParams: { query: searchQuery.trim() || null },
+      queryParamsHandling: 'merge'
+    });
   }
 }

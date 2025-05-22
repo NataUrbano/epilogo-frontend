@@ -52,6 +52,7 @@ export interface UserUpdateAdmin {
   email?: string;
   roles?: string[];
   isActive?: boolean;
+  password?: string; 
 }
 
 export interface UserRolesUpdate {

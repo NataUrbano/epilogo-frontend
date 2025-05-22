@@ -12,6 +12,7 @@ import { WelcomeCarouselComponent } from '../../../shared/components/welcome-car
 import { Book } from '../../../core/models/book.model';
 import { ReservationCreate } from '../../../core/models/reservation.model';
 import { BookDetailSidebarComponent } from '../../../shared/components/books/book-detail-sidebar/book-detail-sidebar.component';
+import { ActivatedRoute, Router } from '@angular/router';
 declare var bootstrap: any;
 
 @Component({
@@ -31,12 +32,6 @@ declare var bootstrap: any;
     <app-welcome-carousel [userName]="userName"></app-welcome-carousel>
 
     <div class="container mx-auto px-4 py-6">
-      <div class="mx-auto max-w-4xl text-center">
-        
-        
-        
-      </div>
-      
       <!-- Content section -->
       <div class="mt-12">
         <!-- Search Bar -->
@@ -102,8 +97,10 @@ export class HomeComponent implements OnInit {
   reservationError = '';
   
   constructor(
-    private bookService: BookService,
-    private reservationService: ReservationService
+  private bookService: BookService,
+  private reservationService: ReservationService,
+  private route: ActivatedRoute,
+  private router: Router
   ) {}
   
   ngOnInit(): void {
@@ -115,6 +112,15 @@ export class HomeComponent implements OnInit {
       this.isAuthenticated = this.authService.isAuthenticated();
       this.userName = user?.userName || '';
     });
+    
+    // AGREGAR ESTA SUSCRIPCIÓN:
+    this.route.queryParams.subscribe(params => {
+      if (params['query']) {
+        this.searchQuery = params['query'];
+        this.selectedCategoryId = null;
+      }
+    });
+
   }
 
   // Método para manejar la selección de categoría
@@ -129,6 +135,13 @@ export class HomeComponent implements OnInit {
     this.searchQuery = query;
     // Al hacer una búsqueda, limpiamos el filtro de categoría
     this.selectedCategoryId = null;
+
+     // AGREGAR ESTA LÍNEA:
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { query: query.trim() || null },
+      queryParamsHandling: 'merge'
+    });
   }
   
   // Método para manejar la selección de un libro

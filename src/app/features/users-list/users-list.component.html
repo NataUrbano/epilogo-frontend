@@ -138,6 +138,19 @@
             <div class="form-text">{{ 'USERS.EMAIL_CANNOT_CHANGE' | translate }}</div>
           </div>
           <div class="mb-3">
+          <label for="userPassword" class="form-label">{{ 'USERS.NEW_PASSWORD' | translate }}</label>
+          <input 
+            type="password"
+            class="form-control"
+            id="userPassword"
+            [(ngModel)]="userEditForm.password"
+            autocomplete="new-password"
+            placeholder="{{ 'USERS.NEW_PASSWORD_PLACEHOLDER' | translate }}"
+          >
+          <div class="form-text">{{ 'USERS.LEAVE_BLANK_TO_KEEP_PASSWORD' | translate }}</div>
+        </div>
+
+          <div class="mb-3">
             <div class="form-check form-switch">
               <input 
                 class="form-check-input" 

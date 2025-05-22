@@ -48,7 +48,8 @@ export class AuthService {
       tap(response => this.handleAuthentication(response)),
       catchError(error => {
         console.error('Registration error', error);
-        return throwError(() => new Error(error.error?.message || 'Registration failed'));
+        const message = this.extractErrorMessage(error);
+        return throwError(() => new Error(message));
       })
     );
   }
@@ -57,10 +58,12 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, userLogin).pipe(
       tap(response => {
         this.handleAuthentication(response)
+        this.getCurrentUserInfo().subscribe();
       }),
       catchError(error => {
-        console.error('Login error', error);
-        return throwError(() => new Error(error.error?.message || 'Login failed'));
+        console.error('Registration error', error);
+        const message = this.extractErrorMessage(error);
+        return throwError(() => new Error(message));
       })
     );
   }
@@ -112,7 +115,7 @@ export class AuthService {
     
     if (!refreshToken) {
       this.logout();
-      return throwError(() => new Error('No refresh token available'));
+      return throwError(() => new Error('Email o contraseña incorrecta'));
     }
     
     return this.http.post<TokenResponse>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
@@ -121,9 +124,10 @@ export class AuthService {
         localStorage.setItem(this.refreshTokenKey, tokens.refreshToken);
       }),
       catchError(error => {
-        console.error('Token refresh error', error);
+        console.error('Registration error', error);
+        const message = this.extractErrorMessage(error);
         this.logout();
-        return throwError(() => new Error('Token refresh failed'));
+        return throwError(() => new Error(message));
       })
     );
   }
@@ -139,8 +143,9 @@ export class AuthService {
         }
       }),
       catchError(error => {
-        console.error('Profile update error', error);
-        return throwError(() => new Error(error.error?.message || 'Profile update failed'));
+        console.error('Registration error', error);
+        const message = this.extractErrorMessage(error);
+        return throwError(() => new Error(message));
       })
     );
   }
@@ -163,8 +168,9 @@ export class AuthService {
         }
       }),
       catchError(error => {
-        console.error('Profile image update error', error);
-        return throwError(() => new Error(error.error?.message || 'Profile image update failed'));
+        console.error('Registration error', error);
+        const message = this.extractErrorMessage(error);
+        return throwError(() => new Error(message));
       })
     );
   }
@@ -180,11 +186,12 @@ export class AuthService {
         }
       }),
       catchError(error => {
-        console.error('Error getting current user info', error);
         if (error.status === 401) {
           this.logout();
         }
-        return throwError(() => new Error(error.error?.message || 'Failed to get user information'));
+        console.error('Registration error', error);
+        const message = this.extractErrorMessage(error);
+        return throwError(() => new Error(message));
       })
     );
   }
@@ -206,4 +213,15 @@ export class AuthService {
   hasAnyRole(roles: string[]): boolean {
     return roles.some(role => this.hasRole(role));
   }
+
+  private extractErrorMessage(error: any): string {
+  if (error?.error?.message) {
+    return error.error.message;
+  }
+  if (error?.message) {
+    return error.message;
+  }
+  return 'Ha ocurrido un error inesperado. Por favor, contacte al administrador.';
+}
+
 }
