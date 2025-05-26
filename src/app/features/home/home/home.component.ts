@@ -25,8 +25,7 @@ declare var bootstrap: any;
     BookListComponent, 
     SearchBarComponent,
     WelcomeCarouselComponent,
-    BookDetailSidebarComponent
-  ],
+    BookDetailSidebarComponent    ],
   template: `
     <!-- Carousel para todos los usuarios -->
     <app-welcome-carousel [userName]="userName"></app-welcome-carousel>

@@ -33,7 +33,8 @@
     "DASHBOARD": "Panel de control",
     "SERVICES": "Servicios",
     "CONTACT": "Contacto",
-    "AUTHORS": "Autores"
+    "AUTHORS": "Autores",
+    "REPORTS": "Reportes"
   },
   "FOOTER": {
     "SUBSCRIPTION_SUCCESS": "¡Gracias por suscribirte! Recibirás nuestras actualizaciones pronto.",

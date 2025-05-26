@@ -145,12 +145,18 @@
           </li>
          <li class="nav-item">
             <a class="nav-link"
-              [routerLink]="hasAdminRole ? '/dashboard' : '/profile'"
+              [routerLink]="hasAdminOrLibrarianRole ? '/dashboard' : '/profile'"
               routerLinkActive="active">
-              {{ hasAdminRole ? ('NAVIGATION.DASHBOARD' | translate) : ('NAVIGATION.MYRESERVATIONS' | translate) }}
+              {{ hasAdminOrLibrarianRole ? ('NAVIGATION.DASHBOARD' | translate) : ('NAVIGATION.MYRESERVATIONS' | translate) }}
             </a>
           </li>
-
+          <li class="nav-item" *ngIf="hasAdminOrLibrarianRole">
+              <a class="nav-link"
+                [routerLink]="'/reports'"
+                routerLinkActive="active">
+                {{ 'NAVIGATION.REPORTS' | translate }}
+              </a>
+          </li>
           <li class="nav-item">
             <a class="nav-link">{{ 'NAVIGATION.SERVICES' | translate }}</a>
           </li>
@@ -197,14 +203,32 @@
             </li>
             <li>
               <a class="mobile-nav-link"
-                [routerLink]="hasAdminRole ? '/dashboard' : '/profile'"
+                [routerLink]="'/reports'"
                 routerLinkActive="active"
                 (click)="closeMobileMenu()">
-                <i class="bi bi-speedometer2 me-2" *ngIf="hasAdminRole"></i>
-                <i class="bi bi-bookmark me-2" *ngIf="!hasAdminRole"></i>
-                {{ hasAdminRole ? ('NAVIGATION.DASHBOARD' | translate) : ('NAVIGATION.MYRESERVATIONS' | translate) }}
+                <i class="bi bi-speedometer2 me-2" *ngIf="hasAdminOrLibrarianRole"></i>
+                <i class="bi bi-bookmark me-2" *ngIf="!hasAdminOrLibrarianRole"></i>
+                {{ 'NAVIGATION.REPORTS' | translate }}
               </a>
             </li>
+            <li class="nav-item" >
+              <a class="nav-link"
+                [routerLink]="'/reports'"
+                routerLinkActive="active">
+                
+              </a>
+            </li>
+            <li *ngIf="hasAdminOrLibrarianRole">
+              <a class="mobile-nav-link"
+                [routerLink]="hasAdminOrLibrarianRole ? '/dashboard' : '/profile'"
+                routerLinkActive="active"
+                (click)="closeMobileMenu()">
+                <i class="bi bi-speedometer2 me-2" *ngIf="hasAdminOrLibrarianRole"></i>
+                <i class="bi bi-bookmark me-2" *ngIf="!hasAdminOrLibrarianRole"></i>
+                {{ hasAdminOrLibrarianRole ? ('NAVIGATION.DASHBOARD' | translate) : ('NAVIGATION.MYRESERVATIONS' | translate) }}
+              </a>
+            </li>
+
             <li>
               <a class="mobile-nav-link" 
                 routerLink="/services"

@@ -1,0 +1,171 @@
+<div class="reports-container">
+  <div class="card">
+    <!-- Header -->
+    <div class="card-header">
+      <h2>📊 Reportes de Reservas</h2>
+      <p>Genera y visualiza reportes en múltiples formatos: HTML, PDF y CSV</p>
+    </div>
+
+    <!-- Content -->
+    <div class="card-content">
+      <!-- Formulario de filtros -->
+      <form [formGroup]="filterForm" class="filter-form">
+        <div class="filter-row">
+          <div class="form-group">
+            <label for="startDate">Fecha inicio:</label>
+            <input type="date" id="startDate" formControlName="startDate" 
+                   (change)="onFilterChange()" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="endDate">Fecha fin:</label>
+            <input type="date" id="endDate" formControlName="endDate" 
+                   (change)="onFilterChange()" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="status">Estado:</label>
+            <select id="status" formControlName="status" (change)="onFilterChange()" class="form-control">
+              <option *ngFor="let status of statusOptions" [value]="status.value">
+                {{ status.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="format">Formato:</label>
+            <select id="format" formControlName="format" class="form-control">
+              <option *ngFor="let format of formatOptions" [value]="format.value">
+                {{ format.icon }} {{ format.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="overdueOnly" (change)="onFilterChange()">
+              Solo mostrar reservas vencidas
+            </label>
+          </div>
+        </div>
+
+        <!-- Botones de acción principales -->
+        <div class="actions-row">
+          <button type="button" class="btn btn-primary" (click)="generateReport()" [disabled]="loading">
+            <span *ngIf="!loading">📥 Generar Reporte</span>
+            <span *ngIf="loading">⏳ Generando...</span>
+          </button>
+
+          <button type="button" class="btn btn-secondary" (click)="clearFilters()" [disabled]="loading">
+            🗑️ Limpiar Filtros
+          </button>
+        </div>
+
+        <!-- Botones de reportes rápidos -->
+        <div class="quick-actions">
+          <h4>🚀 Reportes Rápidos</h4>
+          <div class="quick-buttons">
+            <button type="button" class="btn btn-warning" (click)="generateOverdueReport()" [disabled]="loading">
+              ⚠️ Vencidas (HTML)
+            </button>
+
+            <button type="button" class="btn btn-danger" (click)="generateOverduePdfReport()" [disabled]="loading">
+              📄 Vencidas (PDF)
+            </button>
+
+            <button type="button" class="btn btn-success" (click)="generateMonthlyReport()" [disabled]="loading">
+              📊 Mensual (CSV)
+            </button>
+
+            <button type="button" class="btn btn-info" (click)="generateMonthlyHtmlReport()" [disabled]="loading">
+              🌐 Mensual (HTML)
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Mensajes -->
+      <div *ngIf="message" class="alert" [ngClass]="'alert-' + messageType">
+        {{ message }}
+      </div>
+
+      <hr>
+
+      <!-- Tabla de datos -->
+      <div class="table-container">
+        <div class="table-header">
+          <h3>Vista Previa de Datos</h3>
+          <span class="record-count">{{ reportData.length }} registros encontrados</span>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="loading-container">
+          <div class="spinner"></div>
+          <span>Cargando datos...</span>
+        </div>
+
+        <!-- Tabla -->
+        <div class="table-wrapper" *ngIf="!loading">
+          <table class="report-table" *ngIf="reportData.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Libro</th>
+                <th>Autor</th>
+                <th>F. Reserva</th>
+                <th>F. Esperada</th>
+                <th>F. Real</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of reportData; let i = index" [ngClass]="{'row-even': i % 2 === 0}">
+                <td>{{ item.reservationId }}</td>
+                <td>{{ item.userName }}</td>
+                <td>{{ item.userEmail }}</td>
+                <td>{{ item.bookTitle }}</td>
+                <td>{{ item.bookAuthor }}</td>
+                <td>{{ formatDate(item.reservationDate) }}</td>
+                <td>{{ formatDate(item.expectedReturnDate) }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(item.status, item.isOverdue)">
+                    {{ getStatusText(item.status, item.isOverdue) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- No data -->
+          <div *ngIf="reportData.length === 0" class="no-data">
+            <div class="no-data-icon">📄</div>
+            <p>No se encontraron registros con los filtros aplicados</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información de formatos -->
+      <div class="format-info">
+        <h4>📋 Información de Formatos</h4>
+        <div class="format-cards">
+          <div class="format-card">
+            <h5>🌐 HTML</h5>
+            <p>Se abre en el navegador. Ideal para visualización y se puede imprimir como PDF.</p>
+          </div>
+          <div class="format-card">
+            <h5>📄 PDF</h5>
+            <p>Archivo PDF optimizado para impresión directa y distribución.</p>
+          </div>
+          <div class="format-card">
+            <h5>📊 CSV</h5>
+            <p>Datos estructurados que se pueden abrir en Excel para análisis.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -28,9 +28,11 @@ export class HeaderComponent implements OnInit {
   selectedCategoryId: number | null = null;
   searchQuery: string = '';
   
-    get hasAdminRole(): boolean {
-    return this.authService.hasRole('ROLE_ADMIN');
-    }
+
+    get hasAdminOrLibrarianRole(): boolean {
+  return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_LIBRARIAN');
+}
+
 
   constructor(private viewportScroller: ViewportScroller,private router: Router) {}
 
