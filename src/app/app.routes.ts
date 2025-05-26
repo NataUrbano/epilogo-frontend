@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './core/auth/auth.guard';
 import { ProfileComponent } from './features/profile/profile/profile.component';
 import { ReservationDetailComponent } from './shared/components/reservation-detail/reservation-detail.component';
+import { ReportsComponent } from './features/reports/reports.component';
 
 export const APP_ROUTES: Routes = [
   {
@@ -33,6 +34,12 @@ export const APP_ROUTES: Routes = [
     path: 'reservations/:id',
     component: ReservationDetailComponent,
     canActivate: [authGuard]
+  },
+  {
+    path: 'reports', 
+    component: ReportsComponent,
+    canActivate: [authGuard], // Agregar guard si necesitas autenticación
+    title: 'Epilogo | Reportes'
   },
   {
     path: '**',
